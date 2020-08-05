@@ -1,0 +1,1 @@
+export const sessionStore={getter:{isLoggedIn:function(){return"true"==sessionStorage.getItem("isLoggedIn")}},setter:{isLoggedIn:function(e){sessionStorage.setItem("isLoggedIn",e)}}};

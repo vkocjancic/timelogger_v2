@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "name": "TimeLogger",
+  "private": true,
+  "dependencies": {
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-property-decorator": "^8.4.1"
+  },
+  "devDependencies": {
+    "del": "5.1.0",
+    "gulp": "4.0.2",
+    "gulp-uglify": "3.0.2",
+    "uglify-es": "3.3.10",
+    "vue-template-compiler": "^2.6.11",
+    "axios": "^0.19.2"
+  }
+}

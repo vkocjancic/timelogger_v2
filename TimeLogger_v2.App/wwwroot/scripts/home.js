@@ -1,0 +1,1 @@
+export const HomeComponent={template:"<p>HOME PAGE</p>"};

@@ -1,0 +1,77 @@
+﻿//-----------------------------------------------------------------------------
+// Colors
+//-----------------------------------------------------------------------------
+@color-base: #c71f16;
+@color-white: #ffffff;
+@color-light-grey: #fbf8f8;
+@color-grey: #bbb8b8;
+@color-dark-grey: #4d3332;
+@color-accent: #7eb914;
+@color-dark: #081528;
+@color-yellow: #eecc00;
+
+//-----------------------------------------------------------------------------
+// Fonts & sizes
+//-----------------------------------------------------------------------------
+/*
+    base font size: 1rem ~ 16px;
+    14 is used to decrease default size from 16 to 14
+*/
+@font-size-index: 16.0/16.0;
+@font-size: @font-size-index * 16;
+
+// base font size
+@font-size-normal: unit(@font-size-index, rem);
+
+// all font sizes from PDF
+@font-size-12: unit(12/@font-size, em);
+@font-size-13: unit(13/@font-size, em);
+// normal text
+@font-size-14: unit(14/@font-size, em);
+@font-size-15: unit(15/@font-size, em);
+@font-size-16: unit(16/@font-size, em);
+// infobar - currency
+@font-size-19: unit(19/@font-size, em);
+// titles
+@font-size-26: unit(26/@font-size, em);
+// text next to logo: DBS NET
+@font-size-40: unit(40/@font-size, em);
+// login header
+@font-size-51: unit(51/@font-size, em);
+
+@font-size-large: 2em;
+@font-size-x-large: 2.5em;
+@font-size-top-menu-logo: @font-size-x-large * 1.2;
+
+@font-face {
+    font-family: "Montserrat-Bold";
+    src: url('fonts/Montserrat-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-ExtraBold";
+    src: url('fonts/Montserrat-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-Light";
+    src: url('fonts/Montserrat-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-Medium";
+    src: url('fonts/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-Regular";
+    src: url('fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+//-----------------------------------------------------------------------------
+// Spacings
+//-----------------------------------------------------------------------------
+@spacing-1: 0.5rem;
+@spacing-2: 1rem;
+@spacing-3: 1.5rem;
+@spacing-4: 2rem;
