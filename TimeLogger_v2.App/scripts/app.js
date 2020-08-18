@@ -30,7 +30,7 @@ router.beforeEach((to, from, next) => {
         if (sessionStore.getter.isLoggedIn()) {
             next();
         } else {
-            next({ name: 'Login', query: { redirect: window.location.pathname } });
+            next({ name: 'Login', query: { redirect: to.fullPath } });
         }
     }
 })
