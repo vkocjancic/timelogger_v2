@@ -4,23 +4,24 @@
  *   LoginComponent                  *
  * * * * * * * * * * * * * * * * * * */
 let templateLogin =
-    '<section class="container d-flex h-100">' +
-    '   <div class="justify-content-center align-self-center mx-auto col-md-8 col-lg-5">' +
-    '       <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
-    '       <form name="login" class="form-account" novalidate="novalidate" v-on:submit.prevent="signIn">' +
+    '<section class="account__section">' +
+    '   <div class="account__container">' +
+    '       <form name="login" class="account__form" novalidate="novalidate" v-on:submit.prevent="signIn">' +
     '           <fieldset>' +
+    '               <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your <strong>email address</strong> and <strong>password</strong></p>' +
-    '               <div><input id="inUsername" name="inUsername" type="email" class="form-control" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
-    '               <div><input id="inPassword" name="inPassword" type="password" class="form-control" placeholder="password" v-model="input.password" /></div>' +
-    '               <div><button class="btn btn-lg btn-success btn-block" type="submit" :disabled="disableLogin">{{ input.buttonSignIn }}</button></div>' +
+    '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
+    '               <div><input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" /></div>' +
+    '               <div><button class="btn btn-primary btn-block" type="submit" :disabled="disableLogin">{{ input.buttonSignIn }}</button></div>' +
     '               <ul>' +
-    '                   <li><router-link to="/forgot">Forgot password?</router-link></li>' +
-    '                   <li>Don\'t have an account yet? <router-link to="/create">Create one</router-link></li>' +
+    '                   <li><router-link to="/forgot" class="btn">Forgot password?</router-link></li>' +
+    '                   <li><router-link to="/create" class="btn btn-secondary">Create account</router-link></li>' +
     '               </ul>' +
     '           </fieldset>' +
     '       </form>' +
     '   </div>' +
     '</section>';
+
 
 export const LoginComponent = {
     data() {
@@ -79,24 +80,24 @@ export const LoginComponent = {
  *   CreateAccountComponent          *
  * * * * * * * * * * * * * * * * * * */
 let templateCreateAccount = 
-    '<section class="container d-flex h-100">' +
-    '   <div class="justify-content-center align-self-center mx-auto col-md-8 col-lg-5">' +
-    '       <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
-    '       <form name="create" class="form-account" novalidate="novalidate" v-on:submit.prevent="signUp">' +
+    '<section class="account__section">' +
+    '   <div class="account__container">' +
+    '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="signUp">' +
     '           <fieldset>' +
+    '               <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your <strong>email address</strong> and <strong>password</strong></p>' +
-    '               <div><input id="inUsername" name="inUsername" type="email" class="form-control" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
+    '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div>' +
-    '                   <input id="inPassword" name="inPassword" type="password" class="form-control" placeholder="password" v-model="input.password" />' +
-    '                   <span class="footnote">password policy: <strong>minimum 16 characters</strong></span>' +
+    '                   <input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" />' +
+    '                   <span class="account__footnote">password policy: <strong>minimum 16 characters</strong></span>' +
     '               </div>' +
-    '               <div><input id="inPasswordCheck" name="inPasswordCheck" type="password" class="form-control" placeholder="password validation" v-model="input.passwordCheck" /></div>' +
+    '               <div><input id="inPasswordCheck" name="inPasswordCheck" type="password" class="ctrl" placeholder="password validation" v-model="input.passwordCheck" /></div>' +
     '               <div>' +
-    '                   <button class="btn btn-lg btn-success btn-block" type="submit" :disabled="disableRegistration">{{ input.buttonRegister }}</button>' +
-    '                   <span class="footnote">By creating an account, you are agreeing to our <router-link to="/terms-of-service">Terms of Service</router-link> and <router-link to="/privacy">Privacy Policy</router-link></span>' +
+    '                   <button class="btn btn-primary btn-block" type="submit" :disabled="disableRegistration">{{ input.buttonRegister }}</button>' +
+    '                   <span class="account__footnote">By creating an account, you are agreeing to our <router-link to="/terms-of-service">Terms of Service</router-link> and <router-link to="/privacy">Privacy Policy</router-link></span>' +
     '               </div>' +
     '               <ul>' +
-    '                   <li>Already have an account? <router-link to="/login">Sign in</router-link></li>' +
+    '                   <li><router-link to="/login" class="btn btn-secondary">Sign in</router-link></li>' +
     '               </ul>' +
     '           </fieldset>' +
     '       </form>' +
@@ -183,16 +184,19 @@ export const CreateAccountComponent = {
  *   ForgotPasswordComponent         *
  * * * * * * * * * * * * * * * * * * */
 let templateForgotPassword =
-    '<section class="container d-flex h-100">' +
-    '   <div class="justify-content-center align-self-center mx-auto col-md-8 col-lg-5">' +
-    '       <div class="alert" v-bind:class="getAlertMessageClass" v-if="showAlert">{{ alertMessage }}</div>' +
-    '       <form name="create" class="form-account" novalidate="novalidate" v-on:submit.prevent="sendPasswordRecoveryEmail">' +
+    '<section class="account__section">' +
+    '   <div class="account__container">' +
+    '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="sendPasswordRecoveryEmail">' +
     '           <fieldset>' +
+    '               <div class="alert" v-bind:class="getAlertMessageClass" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your <strong>email address</strong></p>' +
-    '               <div><input id="inUsername" name="inUsername" type="email" class="form-control" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
+    '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div>' +
-    '                   <button class="btn btn-lg btn-success btn-block" type="submit">{{ input.buttonRecovery }}</button>' +
+    '                   <button class="btn btn-primary btn-block" type="submit">{{ input.buttonRecovery }}</button>' +
     '               </div>' +
+    '               <ul>' +
+    '                   <li><router-link to="/login" class="btn btn-secondary">Sign in</router-link></li>' +
+    '               </ul>' +
     '           </fieldset>' +
     '       </form>' +
     '   </div>' +
@@ -244,19 +248,19 @@ export const ForgotPasswordComponent = {
  *   PasswordResetComponent          *
  * * * * * * * * * * * * * * * * * * */
 let templatePasswordReset = 
-    '<section class="container d-flex h-100">' +
-    '   <div class="justify-content-center align-self-center mx-auto col-md-8 col-lg-5">' +
-    '       <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
-    '       <form name="create" class="form-account" novalidate="novalidate" v-on:submit.prevent="resetPassword">' +
+    '<section class="account__section">' +
+    '   <div class="account__container">' +
+    '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="resetPassword">' +
     '           <fieldset>' +
+    '               <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your new <strong>password</strong> twice</p>' +
     '               <div>' +
-    '                   <input id="inPassword" name="inPassword" type="password" class="form-control" placeholder="password" v-model="input.password" />' +
-    '                   <span class="footnote">password policy: <strong>minimum 16 characters</strong></span>' +
+    '                   <input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" />' +
+    '                   <span class="account__footnote">password policy: <strong>minimum 16 characters</strong></span>' +
     '               </div>' +
-    '               <div><input id="inPasswordCheck" name="inPasswordCheck" type="password" class="form-control" placeholder="password validation" v-model="input.passwordCheck" /></div>' +
+    '               <div><input id="inPasswordCheck" name="inPasswordCheck" type="password" class="ctrl" placeholder="password validation" v-model="input.passwordCheck" /></div>' +
     '               <div>' +
-    '                   <button class="btn btn-lg btn-success btn-block" type="submit">{{ input.buttonReset }}</button>' +
+    '                   <button class="btn btn-primary btn-block" type="submit">{{ input.buttonReset }}</button>' +
     '               </div>' +
     '           </fieldset>' +
     '       </form>' +

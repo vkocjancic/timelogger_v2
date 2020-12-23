@@ -24,11 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="gulpfile.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="bundleconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
     <None Include="wwwroot\templates\createnewaccount.html" />
   </ItemGroup>
