@@ -7,15 +7,16 @@ let templateLogin =
     '<section class="account__section">' +
     '   <div class="account__container">' +
     '       <form name="login" class="account__form" novalidate="novalidate" v-on:submit.prevent="signIn">' +
+    '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your <strong>email address</strong> and <strong>password</strong></p>' +
     '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div><input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" /></div>' +
-    '               <div><button class="btn btn-primary btn-block" type="submit" :disabled="disableLogin">{{ input.buttonSignIn }}</button></div>' +
+    '               <div><button class="btn btn--block btn--primary" type="submit" :disabled="disableLogin">{{ input.buttonSignIn }}</button></div>' +
     '               <ul>' +
-    '                   <li><router-link to="/forgot" class="btn">Forgot password?</router-link></li>' +
-    '                   <li><router-link to="/create" class="btn btn-secondary">Create account</router-link></li>' +
+    '                   <li><router-link to="/forgot" class="btn btn--block">Forgot password?</router-link></li>' +
+    '                   <li><router-link to="/create" class="btn btn--block btn--secondary">Create account</router-link></li>' +
     '               </ul>' +
     '           </fieldset>' +
     '       </form>' +
@@ -83,8 +84,9 @@ let templateCreateAccount =
     '<section class="account__section">' +
     '   <div class="account__container">' +
     '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="signUp">' +
+    '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your <strong>email address</strong> and <strong>password</strong></p>' +
     '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div>' +
@@ -93,11 +95,11 @@ let templateCreateAccount =
     '               </div>' +
     '               <div><input id="inPasswordCheck" name="inPasswordCheck" type="password" class="ctrl" placeholder="password validation" v-model="input.passwordCheck" /></div>' +
     '               <div>' +
-    '                   <button class="btn btn-primary btn-block" type="submit" :disabled="disableRegistration">{{ input.buttonRegister }}</button>' +
+    '                   <button class="btn btn--block btn--primary" type="submit" :disabled="disableRegistration">{{ input.buttonRegister }}</button>' +
     '                   <span class="account__footnote">By creating an account, you are agreeing to our <router-link to="/terms-of-service">Terms of Service</router-link> and <router-link to="/privacy">Privacy Policy</router-link></span>' +
     '               </div>' +
     '               <ul>' +
-    '                   <li><router-link to="/login" class="btn btn-secondary">Sign in</router-link></li>' +
+    '                   <li><router-link to="/login" class="btn btn--block btn--secondary">Sign in</router-link></li>' +
     '               </ul>' +
     '           </fieldset>' +
     '       </form>' +
@@ -187,15 +189,16 @@ let templateForgotPassword =
     '<section class="account__section">' +
     '   <div class="account__container">' +
     '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="sendPasswordRecoveryEmail">' +
+    '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
     '               <div class="alert" v-bind:class="getAlertMessageClass" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your <strong>email address</strong></p>' +
     '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div>' +
-    '                   <button class="btn btn-primary btn-block" type="submit">{{ input.buttonRecovery }}</button>' +
+    '                   <button class="btn btn--block btn--primary" type="submit">{{ input.buttonRecovery }}</button>' +
     '               </div>' +
     '               <ul>' +
-    '                   <li><router-link to="/login" class="btn btn-secondary">Sign in</router-link></li>' +
+    '                   <li><router-link to="/login" class="btn btn--block btn--secondary">Sign in</router-link></li>' +
     '               </ul>' +
     '           </fieldset>' +
     '       </form>' +
@@ -217,7 +220,7 @@ export const ForgotPasswordComponent = {
     computed: {
         getAlertMessageClass: function () {
             var forgotPassword = this;
-            return forgotPassword.hasError ? 'alert-danger' : 'alert-success';
+            return forgotPassword.hasError ? 'alert--danger' : 'alert--success';
         }
     },
     methods: {
@@ -251,8 +254,9 @@ let templatePasswordReset =
     '<section class="account__section">' +
     '   <div class="account__container">' +
     '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="resetPassword">' +
+    '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert alert-danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '               <p>Enter your new <strong>password</strong> twice</p>' +
     '               <div>' +
     '                   <input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" />' +
@@ -260,7 +264,7 @@ let templatePasswordReset =
     '               </div>' +
     '               <div><input id="inPasswordCheck" name="inPasswordCheck" type="password" class="ctrl" placeholder="password validation" v-model="input.passwordCheck" /></div>' +
     '               <div>' +
-    '                   <button class="btn btn-primary btn-block" type="submit">{{ input.buttonReset }}</button>' +
+    '                   <button class="btn btn--block btn--primary" type="submit">{{ input.buttonReset }}</button>' +
     '               </div>' +
     '           </fieldset>' +
     '       </form>' +

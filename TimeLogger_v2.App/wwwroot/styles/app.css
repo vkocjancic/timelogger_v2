@@ -1,4 +1,24 @@
 @font-face {
+    font-family: "Montserrat-Bold";
+    src: url('fonts/Montserrat-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-ExtraBold";
+    src: url('fonts/Montserrat-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-Light";
+    src: url('fonts/Montserrat-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Montserrat-Medium";
+    src: url('fonts/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
     font-family: "Montserrat-Regular";
     src: url('fonts/Montserrat-Regular.ttf') format('truetype');
 }
@@ -52,8 +72,8 @@ body {
     background-color: var(--clr-grey);
     color: var(--clr-dark);
     cursor: pointer;
-    display: block;
-    font-size: calc(var(--fs-main) * 1.1);
+    display: inline-block;
+    font-size: 1.1rem;
     padding: var(--pad-form-el-top) var(--pad-form-el-left);
     opacity: .85;
     text-align: center;
@@ -70,17 +90,18 @@ body {
         opacity: 1;
     }
 
-.btn-block {
+.btn--block {
+    display: block;
     width: 100%;
 }
 
-.btn-primary {
+.btn--primary {
     background-color: var(--clr-accent);
     border-color: var(--clr-accent);
     color: var(--clr-white);
 }
 
-.btn-secondary {
+.btn--secondary {
     background-color: var(--clr-dark);
     border-color: var(--clr-dark);
     color: var(--clr-white);
@@ -109,20 +130,20 @@ body {
     background-color: var(--clr-light-grey);
 }
 
-.alert-danger {
+.alert--danger {
     border-left-color: var(--clr-base);
 }
 
-.alert-success {
+.alert--success {
     border-left-color: var(--clr-accent);
 }
 
 /* other styles */
 .account__form {
-    background-image: url('../images/login_logo.png');
+    /*background-image: url('../images/login_logo.png');
     background-position: 50% var(--pt-1);
     background-repeat: no-repeat;
-    padding-top: calc(var(--pt-2) * 4);
+    padding-top: calc(var(--pt-2) * 4);*/
 }
 
     .account__form fieldset {
@@ -149,13 +170,19 @@ body {
         margin-bottom: var(--pt-sm);
     }
 
+.account__form__logo {
+    display: block;
+    margin: var(--pt-1) auto var(--pt-2);
+    object-fit: contain;
+}
+
 .account__footnote {
     font-size: var(--fs-footnote);
 }
 
 
 /* media queries */
-@media(min-width: 900px) {
+@media(min-width: 700px) {
 
     body {
         background-color: var(--clr-light-grey);
