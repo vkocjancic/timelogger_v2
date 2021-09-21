@@ -12,9 +12,7 @@
     const uglify = composer(uglifyes, console);
 
     var paths = {
-        //scripts: ['scripts/**/*.js', 'scripts/**/*.ts', 'scripts/**/*.map'],
         scripts: ['scripts/**/*.js'],
-        templates: ['scripts/**/*.vue'],
         styles: ['styles/**/*.css', 'styles/**/*.ttf'],
     };
 
@@ -24,7 +22,6 @@
 
     gulp.task('default', function () {
         gulp.src(paths.scripts).pipe(uglify()).pipe(gulp.dest('wwwroot/scripts'));
-        gulp.src(paths.templates).pipe(gulp.dest('wwwroot/scripts'));
         gulp.src(paths.styles).pipe(gulp.dest('wwwroot/styles'));
     });
 }
