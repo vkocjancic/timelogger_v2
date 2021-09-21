@@ -139,36 +139,29 @@ body {
 }
 
 /* other styles */
-.account__form {
-    /*background-image: url('../images/login_logo.png');
-    background-position: 50% var(--pt-1);
-    background-repeat: no-repeat;
-    padding-top: calc(var(--pt-2) * 4);*/
+.account__form fieldset {
+    border: 0;
+    padding: 0 var(--pt-1) var(--pt-1);
 }
 
-    .account__form fieldset {
-        border: 0;
-        padding: 0 var(--pt-1) var(--pt-1);
+.account__form div {
+    margin-top: var(--pt-1);
+}
+
+    .account__form div:last-child {
+        margin-top: var(--pt-2);
     }
 
-    .account__form div {
-        margin-top: var(--pt-1);
-    }
+.account__form ul {
+    list-style: none;
+    margin: var(--pt-2) 0 0;
+    padding: 0;
+}
 
-        .account__form div:last-child {
-            margin-top: var(--pt-2);
-        }
-
-    .account__form ul {
-        list-style: none;
-        margin: var(--pt-2) 0 0;
-        padding: 0;
-    }
-
-    .account__form li {
-        display: block;
-        margin-bottom: var(--pt-sm);
-    }
+.account__form li {
+    display: block;
+    margin-bottom: var(--pt-sm);
+}
 
 .account__form__logo {
     display: block;

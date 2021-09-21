@@ -1,9 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TimeLogger_v2.Core.Templating;
 
