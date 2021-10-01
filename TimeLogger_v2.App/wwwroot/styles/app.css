@@ -73,6 +73,11 @@ body {
     padding: 0;
 }
 
+/* typography */
+h1, h2, h3 {
+    font-family: var(--ff-med);
+}
+
 /* layout */
 .header__main {
     background: var(--clr-dark);

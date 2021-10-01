@@ -28,7 +28,7 @@ let templateLayoutDefault =
     '        </div>' +
     '    </header>' +
     '    <main>' +
-    '        <h1>Home page</h1>' +
+    '        <slot />' +
     '    </main>' +
     '</div>';
 
