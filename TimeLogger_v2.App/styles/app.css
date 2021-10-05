@@ -345,6 +345,19 @@ main {
         background-color: var(--clr-light-grey);
     }
 
+    /* layout */
+    .nav__main--toggle-label {
+        display: none;
+    }
+
+    .nav__main {
+        display: block;
+        height: 100vh;
+        padding-top: var(--pt-1);
+        width: 12rem;
+    }
+
+    /* other styles */
     .account__section {
         margin-top: var(--pt-2);
     }
