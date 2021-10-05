@@ -351,10 +351,16 @@ main {
     }
 
     .nav__main {
+        border-top: solid 1px var(--clr-dark-grey-hover);
         display: block;
         height: 100vh;
         padding-top: var(--pt-1);
         width: 12rem;
+    }
+
+    /* content */
+    main {
+        margin-left: calc(12rem + var(--pt-sm));
     }
 
     /* other styles */

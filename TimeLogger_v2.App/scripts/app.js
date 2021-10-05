@@ -15,6 +15,8 @@ const routes = [
     { name: 'TermsOfService', path: '/terms-of-service', component: TermsOfServiceComponent, meta: { isPublicPage: true } },
     // restricted access routes
     { name: 'Home', path: '/home', component: HomeComponent },
+    { name: 'Insights', path: '/insights', component: HomeComponent },
+    { name: 'Tasks', path: '/tasks', component: HomeComponent },
     { path: '/', redirect: { name: 'Home' } }
 ];
 

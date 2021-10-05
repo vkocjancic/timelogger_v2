@@ -357,6 +357,11 @@ main {
         width: 12rem;
     }
 
+    /* content */
+    main {
+        margin-left: calc(12rem + var(--pt-sm));
+    }
+
     /* other styles */
     .account__section {
         margin-top: var(--pt-2);

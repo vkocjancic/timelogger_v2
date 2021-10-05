@@ -12,9 +12,9 @@ let templateLayoutDefault =
     '        <div class="nav__main">' +
     '            <nav class="nav__main--pages">' +
     '                <ul>' +
-    '                    <li><a href="#" class="icon page__daily-logs">Daily logs</a></li>' +
-    '                    <li><a href="#" class="icon page__insights">Insights</a></li>' +
-    '                    <li><a href="#" class="icon page__tasks">Tasks</a></li>' +
+    '                    <li><router-link to="/" class="icon page__daily-logs">Daily logs</router-link></li>' +
+    '                    <li><router-link to="/insights" class="icon page__insights">Insights</router-link></li>' +
+    '                    <li><router-link to="/tasks" class="icon page__tasks">Tasks</router-link></li>' +
     '                </ul>' +
     '            </nav>' +
     '            <nav class="nav__main--projects">' +
