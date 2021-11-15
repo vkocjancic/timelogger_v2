@@ -20,8 +20,8 @@ let templateLayoutDefault =
     '            <nav class="nav__main--projects">' +
     '                <h3>Projects</h3>' +
     '                <ul>' +
-    '                    <li><a href="#" class="icon page__project">Adacta</a></li>' +
-    '                    <li><a href="#" class="icon page__project">TimeLogger</a></li>' +
+    '                    <li><a href="#" class="icon page__project">Project 1</a></li>' +
+    '                    <li><a href="#" class="icon page__project">Project 2</a></li>' +
     '                    <li><a href="#" class="icon page__project--add">Add project</a></li>' +
     '                </ul>' +
     '            </nav>' +

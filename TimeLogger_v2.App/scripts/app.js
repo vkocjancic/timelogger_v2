@@ -1,6 +1,6 @@
 ﻿import { sessionStore } from './clientstore.js';
 import { CreateAccountComponent, ForgotPasswordComponent, LoginComponent, PasswordResetComponent } from './account.js';
-import { HomeComponent } from './home.js';
+import { HomeComponent, InsightsComponent, TasksComponent } from './pages.js';
 
 const PrivacyPolicyComponent = { template: '<p>Privacy policy</p>' };
 const TermsOfServiceComponent = { template: '<p>Terms of service</p>' };
@@ -15,8 +15,8 @@ const routes = [
     { name: 'TermsOfService', path: '/terms-of-service', component: TermsOfServiceComponent, meta: { isPublicPage: true } },
     // restricted access routes
     { name: 'Home', path: '/home', component: HomeComponent },
-    { name: 'Insights', path: '/insights', component: HomeComponent },
-    { name: 'Tasks', path: '/tasks', component: HomeComponent },
+    { name: 'Insights', path: '/insights', component: InsightsComponent },
+    { name: 'Tasks', path: '/tasks', component: TasksComponent },
     { path: '/', redirect: { name: 'Home' } }
 ];
 

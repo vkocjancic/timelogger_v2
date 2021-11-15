@@ -228,7 +228,17 @@ h1, h2, h3 {
 
 /* content */
 main {
-    margin-top: 5rem;
+    margin: 5rem 0 0;
+    padding: 0 var(--pt-sm);
+}
+
+.main__title {
+    border-bottom: solid 1px var(--clr-grey);
+    font-size: calc(var(--fs-main) * 1.2);
+    margin: 0 calc(-1 * var(--pt-sm));
+    padding: 0 var(--pt-sm) var(--pt-sm);
+    position: fixed;
+    width: 100%;
 }
 
 /* buttons */
@@ -354,13 +364,14 @@ main {
         border-top: solid 1px var(--clr-dark-grey-hover);
         display: block;
         height: 100vh;
-        padding-top: var(--pt-1);
+        padding-top: var(--pt-sm);
         width: 12rem;
     }
 
     /* content */
     main {
-        margin-left: calc(12rem + var(--pt-sm));
+        margin-left: calc(12rem);
+        padding: 0 var(--pt-sm) 0;
     }
 
     /* other styles */
