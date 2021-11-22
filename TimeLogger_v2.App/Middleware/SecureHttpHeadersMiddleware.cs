@@ -51,7 +51,7 @@ namespace TimeLogger_v2.App.Middleware
                 }
                 context.Response.Headers.Add(HeaderNames.AccessControlAllowMethods, "GET, POST, PUT, OPTIONS");
                 context.Response.Headers["Alt-Svc"] = "quic=\":443\"; ma=3600";
-                context.Response.Headers.Add(HeaderNames.ContentSecurityPolicy, "default-src 'self' https://cdnjs.cloudflare.com; img-src 'self'; object-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' https://cdnjs.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
+                context.Response.Headers.Add(HeaderNames.ContentSecurityPolicy, "default-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' https://cdnjs.cloudflare.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'");
                 context.Response.Headers["Expect-CT"] = "max-age=604800";
                 context.Response.Headers["Feature-Policy"] = "ambient-light-sensor: 'none'; autoplay: 'none'; accelerometer: 'none'; camera: 'none'; " +
                     "display-capture: 'none'; document-domain: 'none'; encrypted-media: 'none'; geolocation: 'none'; gyroscope: none'; " +

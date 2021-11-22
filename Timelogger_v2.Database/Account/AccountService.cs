@@ -143,7 +143,6 @@ namespace Timelogger_v2.Database.Account
             return canResetPassword;
         }
 
-
         public async Task<bool> CreateAccount(string username, string password)
         {
             var accountCreated = true;
