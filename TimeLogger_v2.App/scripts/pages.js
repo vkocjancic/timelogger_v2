@@ -46,3 +46,22 @@ export const TasksComponent = {
     },
     template: templateTasks
 };
+
+
+/* * * * * * * * * * * * * * * * * * *
+ *   NotYetImplementedComponent      *
+ * * * * * * * * * * * * * * * * * * */
+let templateNotYetImplemented =
+    '<layout-default>' +
+    '    <h1 class="main__title">Under construction</h1>' +
+    '    <section class="main__content content__nyi">' +
+    '        <p>This page does not exist yet. Check back soon.</p>' +
+    '    </section>' +
+    '</layout-default>';
+
+export const NotYetImplementedComponent = {
+    components: {
+        'layout-default': LayoutDefaultComponent
+    },
+    template: templateNotYetImplemented
+};

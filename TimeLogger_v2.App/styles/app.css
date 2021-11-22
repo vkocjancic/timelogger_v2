@@ -374,6 +374,15 @@ main {
         padding: 0 var(--pt-sm) 0;
     }
 
+    .main__content {
+        padding-top: var(--pt-2);
+        position: relative;
+    }
+
+    .content__nyi {
+        font-size: calc(var(--fs-main) * 1.2);
+    }
+
     /* other styles */
     .account__section {
         margin-top: var(--pt-2);

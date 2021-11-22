@@ -1,6 +1,6 @@
 ﻿import { sessionStore } from './clientstore.js';
 import { CreateAccountComponent, ForgotPasswordComponent, LoginComponent, PasswordResetComponent } from './account.js';
-import { HomeComponent, InsightsComponent, TasksComponent } from './pages.js';
+import { HomeComponent, InsightsComponent, TasksComponent, NotYetImplementedComponent } from './pages.js';
 
 const PrivacyPolicyComponent = { template: '<p>Privacy policy</p>' };
 const TermsOfServiceComponent = { template: '<p>Terms of service</p>' };
@@ -17,6 +17,7 @@ const routes = [
     { name: 'Home', path: '/home', component: HomeComponent },
     { name: 'Insights', path: '/insights', component: InsightsComponent },
     { name: 'Tasks', path: '/tasks', component: TasksComponent },
+    { name: 'NotYetImplemented', path: '/nyi', component: NotYetImplementedComponent },
     { path: '/', redirect: { name: 'Home' } }
 ];
 

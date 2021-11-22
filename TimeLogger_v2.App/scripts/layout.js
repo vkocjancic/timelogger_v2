@@ -20,9 +20,9 @@ let templateLayoutDefault =
     '            <nav class="nav__main--projects">' +
     '                <h3>Projects</h3>' +
     '                <ul>' +
-    '                    <li><a href="#" class="icon page__project">Project 1</a></li>' +
-    '                    <li><a href="#" class="icon page__project">Project 2</a></li>' +
-    '                    <li><a href="#" class="icon page__project--add">Add project</a></li>' +
+    '                    <li><router-link to="/nyi" class="icon page__project">Project 1</router-link></li>' +
+    '                    <li><router-link to="/nyi" class="icon page__project">Project 2</router-link></li>' +
+    '                    <li><router-link to="/nyi" class="icon page__project--add">Add project</router-link></li>' +
     '                </ul>' +
     '            </nav>' +
     '        </div>' +
