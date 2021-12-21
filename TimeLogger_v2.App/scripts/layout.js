@@ -1,4 +1,6 @@
-﻿/* * * * * * * * * * * * * * * * * * *
+﻿import { sessionStore } from './clientstore.js';
+
+/* * * * * * * * * * * * * * * * * * *
  *   LayoutDefaultComponent          *
  * * * * * * * * * * * * * * * * * * */
 let templateLayoutDefault =
@@ -20,8 +22,7 @@ let templateLayoutDefault =
     '            <nav class="nav__main--projects">' +
     '                <h3>Projects</h3>' +
     '                <ul>' +
-    '                    <li><router-link to="/nyi" class="icon page__project">Project 1</router-link></li>' +
-    '                    <li><router-link to="/nyi" class="icon page__project">Project 2</router-link></li>' +
+    '                    <li v-for="project in projects" :key="project.id"><router-link to="/nyi" class="icon page__project">{{ project.name }}</router-link></li>' +
     '                    <li><router-link to="/nyi" class="icon page__project--add">Add project</router-link></li>' +
     '                </ul>' +
     '            </nav>' +
@@ -33,6 +34,29 @@ let templateLayoutDefault =
     '</div>';
 
 export const LayoutDefaultComponent = {
+    data() {
+        return {
+            projects: []
+        }
+    },
+    created() {
+        this.fetchData();
+    },
+    methods: {
+        fetchData: function () {
+            var layout = this;
+            layout.projects = sessionStore.getter.projects();
+            if (!layout.projects || layout.projects.length === 0) {
+                axios.get('/api/project/list').then(function (response) {
+                    layout.projects = response.data;
+                    sessionStore.setter.projects(layout.projects);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+    },
     template: templateLayoutDefault
 };
 /* END LayoutDefaultComponent        */
