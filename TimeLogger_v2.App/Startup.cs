@@ -13,8 +13,11 @@ using Microsoft.Extensions.Hosting;
 using Timelogger_v2.Database.Account;
 using TimeLogger_v2.App.Middleware;
 using TimeLogger_v2.Core.DAL;
+using Timelogger_v2.Core.DAL.Account;
 using TimeLogger_v2.Core.Notifications;
 using TimeLogger_v2.Core.Templating;
+using TimeLogger_v2.Core.DAL.Project;
+using Timelogger_v2.Database.Project;
 
 namespace TimeLogger_v2.App
 {
@@ -72,6 +75,7 @@ namespace TimeLogger_v2.App
                 new FileTemplateHelper(System.IO.Path.Combine(WebHostEnvironment.WebRootPath, Configuration.GetValue("TemplatesPath", "templates"))));
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IProjectService, ProjectService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

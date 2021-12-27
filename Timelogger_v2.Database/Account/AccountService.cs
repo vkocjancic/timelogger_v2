@@ -9,7 +9,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Timelogger_v2.Core.DAL.Account;
-using TimeLogger_v2.Core.DAL;
 
 namespace Timelogger_v2.Database.Account
 {

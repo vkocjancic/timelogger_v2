@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Timelogger_v2.Core.DAL.Account;
 
-namespace TimeLogger_v2.Core.DAL
+namespace Timelogger_v2.Core.DAL.Account
 {
 
     public interface IAccountService
