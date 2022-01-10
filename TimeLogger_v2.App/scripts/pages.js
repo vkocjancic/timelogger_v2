@@ -5,7 +5,10 @@
  * * * * * * * * * * * * * * * * * * */
 let templateHome =
     '<layout-default>' +
-    '    <h1 class="main__title">Daily logs</h1>' +
+    '    <header class="main__title">' + 
+    '        <h1 class="main__title--title">Daily logs</h1>' +
+    '        <p class="main__title--sub">Logged today: <em class="main__title--info">8h 20m</em></p>' +
+    '    </header>' +
     '</layout-default>';
 
 export const HomeComponent = {
@@ -21,7 +24,9 @@ export const HomeComponent = {
  * * * * * * * * * * * * * * * * * * */
 let templateInsights =
     '<layout-default>' +
-    '    <h1 class="main__title">Insights</h1>' +
+    '    <header class="main__title">' +
+    '        <h1 class="main__title--title">Insights</h1>' +
+    '    </header>' +
     '</layout-default>';
 
 export const InsightsComponent = {
@@ -37,7 +42,9 @@ export const InsightsComponent = {
  * * * * * * * * * * * * * * * * * * */
 let templateTasks =
     '<layout-default>' +
-    '    <h1 class="main__title">Task list</h1>' +
+    '    <header class="main__title">' +
+    '        <h1 class="main__title--title">Task list</h1>' +
+    '    </header>' +
     '</layout-default>';
 
 export const TasksComponent = {
@@ -53,7 +60,9 @@ export const TasksComponent = {
  * * * * * * * * * * * * * * * * * * */
 let templateNotYetImplemented =
     '<layout-default>' +
-    '    <h1 class="main__title">Under construction</h1>' +
+    '    <header class="main__title">' +
+    '        <h1 class="main__title--title">Under construction</h1>' +
+    '    </header>' +
     '    <section class="main__content content__nyi">' +
     '        <p>This page does not exist yet. Check back soon.</p>' +
     '    </section>' +
