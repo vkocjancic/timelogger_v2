@@ -21,7 +21,7 @@ let templateHome =
     '                </tr>'+
     '            </thead>' +
     '            <tbody v-if="timeEntries.length > 0">' +
-    '                <tr v-for="timeEntry in timeEntries">' +
+    '                <tr v-for="timeEntry in timeEntries" v-bind:class="{ \'table__row--edit\': timeEntry.isEdited }" >' +
     '                    <td class="table__col">{{timeEntry.begin}}</td>' +
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
@@ -30,18 +30,6 @@ let templateHome =
     '                        <a href="#" class="btn btn--sm" v-else>Edit</a>' +
     '                    </td>' +
     '                </tr>' +
-    '                <tr class="table__row--edit">'+
-    '                    <td class="table__col">08:00</td>'+
-    '                    <td class="table__col">10:35</td>'+
-    '                    <td class="table__col">Worked on some important stuff #General _Task1</td>'+
-    '                    <td class="table__col table__col--actions"><a href="#" class="btn btn--sm btn--secondary">Cancel</a></td>'+
-    '                </tr>'+
-    '                <tr>'+
-    '                    <td class="table__col">10:35</td>'+
-    '                    <td class="table__col">11:57</td>'+
-    '                    <td class="table__col">Worked on some non-important stuff #General _Task2</td>'+
-    '                    <td class="table__col table__col--actions"><a href="#" class="btn btn--sm">Edit</a></td>'+
-    '                </tr>'+
     '            </tbody>' +
     '            <tbody v-else>' +
     '                <tr class="table__row--empty"><td colspan="4" class="table__col">It is rather lonely in here :( ...</td></tr>' +
