@@ -236,15 +236,6 @@ main {
     padding: 0 var(--pt-sm);
 }
 
-/*.main__title {
-    border-bottom: solid 1px var(--clr-grey);
-    font-size: calc(var(--fs-main) * 1.2);
-    margin: 0 calc(-1 * var(--pt-sm));
-    padding: 0 var(--pt-sm) var(--pt-sm);
-    position: fixed;
-    width: 100%;
-}*/
-
 .main__title {
     align-items: center;
     border-bottom: solid 1px var(--clr-grey);
@@ -301,6 +292,11 @@ main {
         opacity: 1;
     }
 
+.btn--sm {
+    font-size: 0.85rem;
+    padding: calc(var(--pad-form-el-top) * 0.5) var(--pad-form-el-left);
+}
+
 .btn--block {
     display: block;
     width: 100%;
@@ -349,6 +345,34 @@ main {
     border-left-color: var(--clr-accent);
 }
 
+/* tables */
+.table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table__col {
+    border-bottom: solid 1px var(--clr-grey);
+    padding: var(--pt-sm);
+    padding-left: 0;
+    text-align: left;
+}
+
+.table__col--actions {
+    padding-right: 0;
+    text-align: right;
+}
+
+.table__row--edit .table__col, .table__row--empty .table__col {
+    color: var(--clr-grey);
+    font-style: italic;
+}
+
+.table__row--edit .table__col--actions {
+    font-style: normal;
+}
+
 /* other styles */
 .account__form fieldset {
     border: 0;
@@ -382,6 +406,15 @@ main {
 
 .account__footnote {
     font-size: var(--fs-footnote);
+}
+
+.timelog__form fieldset {
+    border: 0;
+    padding: var(--pt-1) 0 var(--pt-sm);
+}
+
+.timelog__form--actions {
+    text-align: right;
 }
 
 /* media queries */

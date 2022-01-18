@@ -1,0 +1,1 @@
+export const durationCalculator={calc:function(t,r){var n=0;return t&&r&&(n=(new Date(r)-new Date(t))/1e3/60),n}};export const timeEntryFormatter={fromApiDateTime:function(t){var r=new Date(t);return r.getHours().toString().padStart(2,"0")+":"+r.getMinutes().toString().padStart(2,"0")},fromDuration:function(t){return Math.floor(t/60)+"h "+t%60+"m"}};
