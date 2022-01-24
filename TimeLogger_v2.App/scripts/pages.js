@@ -37,13 +37,13 @@ let templateHome =
     '            <tfoot>'+
     '                <tr>'+
     '                    <td colspan="4">'+
-    '                        <form class="timelog__form" name="edit" novalidate="novalidate">'+
+    '                        <form class="timelog__form" name="edit" novalidate="novalidate" v-on:submit.prevent="submitTimeEntry">'+
     '                            <fieldset>'+
-    '                                <input id="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for _Task #Channel" v-model="input.entryText" />'+
+    '                                <input id="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for >Task #Channel" v-model="input.entryText" />'+
     '                            </fieldset>'+
     '                            <div class="timelog__form--actions">'+
-    '                                <a href="#" class="btn btn--sm btn--primary">Save</a>'+
-    '                                <a href="#" class="btn btn--sm btn--secondary">Delete</a>'+
+    '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
+    '                                <button class="btn btn--sm btn--secondary">Delete</button>'+
     '                            </div>'+
     '                        </form>'+
     '                    </td>'+
@@ -61,7 +61,7 @@ export const HomeComponent = {
                 entryText: ''
             },
             timeEntries: [],
-            totalDuration: '0m'
+            totalDuration: '0m',
         }
     },
     created() {
@@ -91,6 +91,13 @@ export const HomeComponent = {
                 //TODO: display alert message
                 console.log(error);
             });
+        },
+
+        submitTimeEntry: function (event) {
+            var self = this,
+                // TODO: date must be obtained from navigation
+                entryFromString = timeEntryFormatter.fromInputFieldToObject('2022-01-24', self.input.entryText);
+            console.log(entryFromString);
         }
 
     },
