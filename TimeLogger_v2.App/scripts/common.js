@@ -4,7 +4,11 @@
         return dateTime.getHours().toString().padStart(2, '0') + ':' + dateTime.getMinutes().toString().padStart(2, '0');
     },
 
-    toISODate: function (dateToConvert) {
+    fromIsoDate: function (dateToConvert) {
+        return new Date(dateToCovert);
+    },
+
+    toIsoDate: function (dateToConvert) {
         return dateToConvert.getFullYear() + '-' + (dateToConvert.getMonth() + 1).toString().padStart(2, '0') + '-' + dateToConvert.getDate().toString().padStart(2, '0');
     }
 }

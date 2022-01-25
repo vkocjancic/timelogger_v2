@@ -63,6 +63,7 @@ export const HomeComponent = {
             input: {
                 entryText: ''
             },
+            selectedDate: dateFormatter.toIsoDate(new Date()),
             showAlert: false,
             timeEntries: [],
             totalDuration: '0m',
@@ -74,7 +75,7 @@ export const HomeComponent = {
     methods: {
         fetchData: function () {
             var dailyLogs = this;
-            axios.get('/api/timeentry/list').then(function (response) {
+            axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate }}).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
                 entries.forEach((entry) => {
@@ -95,7 +96,7 @@ export const HomeComponent = {
         },
 
         handleDateChange: function (newDate) {
-            console.log(newDate);
+            selectedDate = newDate;
         },
 
         newEntryFromApiEntry: function (entry) {

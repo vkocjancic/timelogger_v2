@@ -12,7 +12,7 @@ let templateDateNavigator =
 export const DateNavigatorComponent = {
     data() {
         return {
-            selectedDate: dateFormatter.toISODate(new Date())
+            selectedDate: dateFormatter.toIsoDate(new Date())
         }
     },
 
