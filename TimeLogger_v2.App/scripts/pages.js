@@ -1,5 +1,6 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
-import { durationCalculator, timeEntryFormatter } from './common.js';
+import { DateNavigatorComponent } from './shared.js';
+import { dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
 /* * * * * * * * * * * * * * * * * * *
  *   HomeComponent                   *
@@ -10,7 +11,9 @@ let templateHome =
     '        <h1 class="main__title--title">Daily logs</h1>' +
     '        <p class="main__title--sub">Logged today: <em class="main__title--info">{{totalDuration}}</em></p>' +
     '    </header>' +
+    '    <date-navigator v-on:date-change="handleDateChange"></date-navigator>' +
     '    <section class="main__content">' +
+    '        <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
     '        <table class="table">'+
     '            <thead>'+
     '                <tr>'+
@@ -39,7 +42,7 @@ let templateHome =
     '                    <td colspan="4">'+
     '                        <form class="timelog__form" name="edit" novalidate="novalidate" v-on:submit.prevent="submitTimeEntry">'+
     '                            <fieldset>'+
-    '                                <input id="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for >Task #Channel" autocomplete="off" v - model="input.entryText" /> '+
+    '                                <input id="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for >Task #Channel" autocomplete="off" v-model="input.entryText" /> '+
     '                            </fieldset>'+
     '                            <div class="timelog__form--actions">'+
     '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
@@ -60,6 +63,7 @@ export const HomeComponent = {
             input: {
                 entryText: ''
             },
+            showAlert: false,
             timeEntries: [],
             totalDuration: '0m',
         }
@@ -74,35 +78,50 @@ export const HomeComponent = {
                 var entries = response.data;
                 var totalDuration = 0;
                 entries.forEach((entry) => {
-                    var newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isEdited: false };
-                    if (entry.begin) {
-                        newEntry.begin = timeEntryFormatter.fromApiDateTime(entry.begin);
-                    }
-                    if (entry.end) {
-                        newEntry.end = timeEntryFormatter.fromApiDateTime(entry.end);
-                    }
-                    newEntry.duration = durationCalculator.calc(entry.begin, entry.end);
-                    newEntry.durationStr = timeEntryFormatter.fromDuration(newEntry.duration);
+                    var newEntry = dailyLogs.newEntryFromApiEntry(entry);
                     dailyLogs.timeEntries.push(newEntry);
                     totalDuration += newEntry.duration;
                 });
-                dailyLogs.totalDuration = timeEntryFormatter.fromDuration(totalDuration);
+                dailyLogs.totalDuration = durationFormatter.fromDuration(totalDuration);
             }).catch(function (error) {
-                //TODO: display alert message
+                //if (error.response.status === 400) {
+                //    dailyLogs.alertMessage = (error.response.data.errorMessage) ? error.response.data.errorMessage : error.response.data;
+                //}
+                //else {
+                //    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
+                //}
                 console.log(error);
             });
         },
 
+        handleDateChange: function (newDate) {
+            console.log(newDate);
+        },
+
+        newEntryFromApiEntry: function (entry) {
+            var newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isEdited: false };
+            if (entry.begin) {
+                newEntry.begin = dateFormatter.fromApiDateTime(entry.begin);
+            }
+            if (entry.end) {
+                newEntry.end = dateFormatter.fromApiDateTime(entry.end);
+            }
+            newEntry.duration = durationCalculator.calc(entry.begin, entry.end);
+            newEntry.durationStr = durationFormatter.fromDuration(newEntry.duration);
+            return newEntry;
+        },
+
         submitTimeEntry: function (event) {
-            var self = this,
+            var dailyLogs = this,
                 // TODO: date must be obtained from navigation
-                entryFromString = timeEntryFormatter.fromInputFieldToObject('2022-01-24', self.input.entryText);
-            console.log(entryFromString);
+                entryFromString = timeEntryFormatter.fromInputFieldToObject('2022-01-24', dailyLogs.input.entryText);
+            // TODO: save new time entry and redisplay it later
         }
 
     },
     components: {
-        'layout-default': LayoutDefaultComponent
+        'layout-default': LayoutDefaultComponent,
+        'date-navigator': DateNavigatorComponent
     },
     template: templateHome
 };

@@ -1,4 +1,15 @@
-﻿export const durationCalculator = {
+﻿export const dateFormatter = {
+    fromApiDateTime: function (dateToConvert) {
+        var dateTime = new Date(dateToConvert);
+        return dateTime.getHours().toString().padStart(2, '0') + ':' + dateTime.getMinutes().toString().padStart(2, '0');
+    },
+
+    toISODate: function (dateToConvert) {
+        return dateToConvert.getFullYear() + '-' + (dateToConvert.getMonth() + 1).toString().padStart(2, '0') + '-' + dateToConvert.getDate().toString().padStart(2, '0');
+    }
+}
+
+export const durationCalculator = {
     calc: function (dateBegin, dateEnd) {
         var duration = 0;
         if (dateBegin && dateEnd) {
@@ -8,16 +19,15 @@
     }
 }
 
-export const timeEntryFormatter = {
-    fromApiDateTime: function (dateToConvert) {
-        var dateTime = new Date(dateToConvert);
-        return dateTime.getHours().toString().padStart(2, '0') + ':' + dateTime.getMinutes().toString().padStart(2, '0');
-    },
+export const durationFormatter = {
     fromDuration: function (duration) {
         var hours = Math.floor(duration / 60);
         var minutes = duration % 60;
         return hours + 'h ' + minutes + 'm';
-    },
+    }
+}
+
+export const timeEntryFormatter = {   
     fromInputFieldToObject: function (date, inputText) {
         var matchTime = inputText.match(/(\@\d{1,2}\:{0,1}\d{2})(\-{0,1}\d{1,2}\:{0,1}\d{2}){0,1}/),
             matchTasks = (inputText.match(/\>\S+/g) || []).map(t => t.slice(1)),
@@ -33,6 +43,7 @@ export const timeEntryFormatter = {
         console.log(matchTime);
         return entry;
     },
+
     fromInputTypeToISODate: function (date, timeToConvert) {
         if (!timeToConvert) {
             return '';
@@ -47,4 +58,4 @@ export const timeEntryFormatter = {
         }
         return date + ' ' + time;
     }
-};
+}

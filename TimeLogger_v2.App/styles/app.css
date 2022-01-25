@@ -408,6 +408,25 @@ main {
     font-size: var(--fs-footnote);
 }
 
+.date__nav {
+    margin-top: var(--pt-1);
+    text-align: center;
+}
+
+.date__nav--picker {
+    background-color: inherit;
+    border: 0;
+    border-bottom: solid 2px transparent;
+    cursor: pointer;
+    font-size: 2rem;
+    outline: 0;
+}
+
+    .date__nav--picker:hover,
+    .date__nav--picker:focus {
+        border-bottom: solid 2px var(--clr-dark);
+    }
+
 .timelog__form fieldset {
     border: 0;
     padding: var(--pt-1) 0 var(--pt-sm);
