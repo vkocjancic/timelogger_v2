@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Timelogger_v2.Core.DAL.Account
+namespace TimeLogger_v2.Core.DAL.Account
 {
 
     public interface IAccountService

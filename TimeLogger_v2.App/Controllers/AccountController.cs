@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TimeLogger_v2.App.Model;
-using Timelogger_v2.Core.DAL.Account;
+using TimeLogger_v2.Core.DAL.Account;
 using TimeLogger_v2.Core.Notifications;
 
 namespace TimeLogger_v2.App.Controllers

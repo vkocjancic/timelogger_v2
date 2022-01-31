@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Timelogger_v2.Core.DAL;
+using TimeLogger_v2.Core.DAL;
 
 namespace TimeLogger_v2.Core.DAL.TimeLog
 {

@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLogger_v2.App", "TimeLogger_v2.App\TimeLogger_v2.App.csproj", "{456E02CF-1DB7-4242-9730-A583C5B64ABC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeLogger_v2.Core", "TimeLogger_v2.Core\TimeLogger_v2.Core.csproj", "{C7E11AEF-1A6E-4080-A640-EAA76BF0FBF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLogger_v2.Core", "TimeLogger_v2.Core\TimeLogger_v2.Core.csproj", "{C7E11AEF-1A6E-4080-A640-EAA76BF0FBF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timelogger_v2.Database", "Timelogger_v2.Database\Timelogger_v2.Database.csproj", "{6A5C88D8-1495-460A-8F0F-5089DB4267C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeLogger_v2.Database", "Timelogger_v2.Database\TimeLogger_v2.Database.csproj", "{6A5C88D8-1495-460A-8F0F-5089DB4267C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

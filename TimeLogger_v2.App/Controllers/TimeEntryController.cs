@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeLogger_v2.App.Model;
+using TimeLogger_v2.Core.DAL.TimeLog;
 
 namespace TimeLogger_v2.App.Controllers
 {
@@ -18,14 +19,16 @@ namespace TimeLogger_v2.App.Controllers
         #region Declarations
 
         private readonly ILogger<TimeEntryController> _logger;
+        private readonly ITimeEntryService _timeEntryService;
 
         #endregion
 
         #region Constructors
 
-        public TimeEntryController(ILogger<TimeEntryController> logger)
+        public TimeEntryController(ILogger<TimeEntryController> logger, ITimeEntryService timeEntryService)
         {
             _logger = logger;
+            _timeEntryService = timeEntryService;
         }
 
         #endregion
@@ -33,18 +36,19 @@ namespace TimeLogger_v2.App.Controllers
         #region API methods
 
         [HttpGet]
-        public /*async*/ Task<IActionResult> List([FromQuery] string selectedDate)
+        public async Task<IActionResult> List([FromQuery] string selectedDate)
         {
             var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
             _logger.LogDebug("{0}\tList time entries for user '{1}' and date '{2}'", remoteIpAddress, Request.HttpContext.User.Identity.Name, selectedDate);
             DateTime dateSelected = string.IsNullOrEmpty(selectedDate) ? DateTime.Today : DateTime.ParseExact(selectedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            var timeEntries = new List<TimeEntryModel>()
+            var entriesFromDb = await _timeEntryService.GetAllUserEntriesForDate(Request.HttpContext.User.Identity.Name, dateSelected);
+            var entries = new List<TimeEntryModel>(entriesFromDb.Count());
+            foreach (var entry in entriesFromDb)
             {
-                new TimeEntryModel() { Id = Guid.NewGuid(), BeginIsoDateTime = "2022-01-18 08:00:00", EndIsoDateTime = "2022-01-18 10:35:00", Description="Worked on some important stuff #General _Task1" },
-                new TimeEntryModel() { Id = Guid.NewGuid(), BeginIsoDateTime = "2022-01-18 10:35:00", EndIsoDateTime = "2022-01-18 11:57:00", Description="Worked on some non-important stuff #General _Task2" },
-            };
-            _logger.LogInformation("{0}\tList time entries for user '{1}' and date '{2}' found {3} time entries(s)", remoteIpAddress, Request.HttpContext.User.Identity.Name, selectedDate, timeEntries.Count);
-            return Task.FromResult((IActionResult)Ok(timeEntries));
+                entries.Add(new TimeEntryModel(entry));
+            }
+            _logger.LogInformation("{0}\tList time entries for user '{1}' and date '{2}' found {3} time entries(s)", remoteIpAddress, Request.HttpContext.User.Identity.Name, selectedDate, entries.Count);
+            return Ok(entries);
         }
 
         #endregion

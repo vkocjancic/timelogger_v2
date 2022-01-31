@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Timelogger_v2.Database
+namespace TimeLogger_v2.Database
 {
     public abstract class BusinessBase
     {

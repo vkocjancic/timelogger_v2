@@ -8,16 +8,16 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Timelogger_v2.Core.DAL.Account;
+using TimeLogger_v2.Core.DAL.Account;
 
-namespace Timelogger_v2.Database.Account
+namespace TimeLogger_v2.Database.Account
 {
     public class AccountService : IAccountService
     {
 
         #region Declarations
 
-        private readonly string _databaseName = "db\\main.db";
+        private readonly string _databaseName = "Filename=db\\main.db; Connection=Shared;";
         private readonly int _defaultLoginTimeout = 10;
         private readonly int _maxLoginTimeout = 600;
         private ILogger<AccountService> _logger;

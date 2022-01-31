@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Net;
 using System.Text;
 
-namespace Timelogger_v2.Core.DAL.Account
+namespace TimeLogger_v2.Core.DAL.Account
 {
     public class Audit : BusinessBase
     {

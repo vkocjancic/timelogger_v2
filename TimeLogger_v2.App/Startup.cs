@@ -10,14 +10,16 @@ using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Timelogger_v2.Database.Account;
+using TimeLogger_v2.Database.Account;
 using TimeLogger_v2.App.Middleware;
 using TimeLogger_v2.Core.DAL;
-using Timelogger_v2.Core.DAL.Account;
+using TimeLogger_v2.Core.DAL.Account;
 using TimeLogger_v2.Core.Notifications;
 using TimeLogger_v2.Core.Templating;
 using TimeLogger_v2.Core.DAL.Project;
-using Timelogger_v2.Database.Project;
+using TimeLogger_v2.Database.Project;
+using TimeLogger_v2.Core.DAL.TimeLog;
+using TimeLogger_v2.Database.TimeEntry;
 
 namespace TimeLogger_v2.App
 {
@@ -76,6 +78,7 @@ namespace TimeLogger_v2.App
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<ITimeEntryService, TimeEntryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

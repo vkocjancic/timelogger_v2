@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Timelogger_v2.Core.DAL.Account;
+using TimeLogger_v2.Core.DAL.Account;
 using TimeLogger_v2.Core.Templating;
 
 namespace TimeLogger_v2.Core.Notifications
