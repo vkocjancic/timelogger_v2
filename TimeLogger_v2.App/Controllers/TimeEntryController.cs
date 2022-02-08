@@ -56,6 +56,33 @@ namespace TimeLogger_v2.App.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete([FromBody] TimeEntryModel model)
+        {
+            var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
+            _logger.LogDebug("{0}\tDeleting time entry for user '{1}' with id '{2}'", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
+            try
+            {
+                var adapter = new TimeEntryAdapter();
+                var entry = adapter.ToDomain(model);
+                if (await _timeEntryService.DeleteEntry(Request.HttpContext.User.Identity.Name, entry))
+                {
+                    _logger.LogInformation("{0}\tDeleted time entry for user '{1}' with id '{2}'", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
+                    return Ok(model);
+                }
+                else
+                {
+                    _logger.LogWarning("{0}\tFailed to delete time entry for user '{1}' with id '{2}", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{0}\tDelete time entry error for user '{1}' with id '{2}", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] TimeEntryModel model)
         {
@@ -72,13 +99,13 @@ namespace TimeLogger_v2.App.Controllers
                 }
                 else
                 {
-                    _logger.LogWarning("{0}\tFailed to update time entry for user '{1}' with id '{2}", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
+                    _logger.LogWarning("{0}\tFailed to update time entry for user '{1}' with id '{2}'", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
                     return BadRequest();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "{0}\tCreate time entry error", remoteIpAddress);
+                _logger.LogError(ex, "{0}\tUpdate time entry error for user '{1}' with id '{2}'", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
                 return BadRequest(ex.Message);
             }
         }

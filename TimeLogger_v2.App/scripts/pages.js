@@ -87,7 +87,26 @@ export const HomeComponent = {
         },
 
         deleteTimeEntry: function (event) {
-            //TODO: implement this!
+            var dailyLogs = this,
+                ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === dailyLogs.selectedEntryId),
+                ix = dailyLogs.selectedEntryId;
+            // copy new object back into the stack
+            dailyLogs.timeEntries.splice(ixEntry, 1);
+            dailyLogs.recalculateTotalDuration();
+            dailyLogs.clearEntryFromEdit();
+            // submit entry to server
+            axios.post('api/timeentry/delete', { Id: ix }).then(function (response) {
+                // we don't need to do anything
+            }).catch(function (error) {
+                if (error.response.status === 401 || error.response.status === 403) {
+                    sessionStore.setter.isLoggedIn(false);
+                    router.push('/');
+                }
+                else {
+                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
+                    dailyLogs.showAlert = true;
+                }
+            });
         },
 
         fetchData: function () {

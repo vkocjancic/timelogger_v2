@@ -35,23 +35,32 @@ namespace TimeLogger_v2.App.Adapter
         {
             var domain = new TimeEntry()
             {
-                Begin = DateTime.ParseExact(model.BeginIsoDateTime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
-                Description = model.Description,
-                End = (string.IsNullOrEmpty(model.EndIsoDateTime)) ? null : DateTime.ParseExact(model.EndIsoDateTime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
+                Description = model.Description
             };
+            if (!string.IsNullOrEmpty(model.BeginIsoDateTime))
+            {
+                domain.Begin = DateTime.ParseExact(model.BeginIsoDateTime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            }
+            if (!string.IsNullOrEmpty(model.EndIsoDateTime))
+            {
+                domain.End = DateTime.ParseExact(model.EndIsoDateTime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            }
             if (model.Id != Guid.Empty)
             {
                 domain.Id = model.Id;
             }
             domain.Projects = new List<Project>();
-            foreach (Match match in Regex.Matches(domain.Description, @"\#\S+"))
-            {
-                domain.Projects.Add(new Project() { Name = match.Value.Substring(1) });
-            }
             domain.Tasks = new List<Core.DAL.Project.Task>();
-            foreach (Match match in Regex.Matches(domain.Description, @"\>\S+"))
+            if (!string.IsNullOrEmpty(domain.Description))
             {
-                domain.Tasks.Add(new Core.DAL.Project.Task() { Name = match.Value.Substring(1) });
+                foreach (Match match in Regex.Matches(domain.Description, @"\#\S+"))
+                {
+                    domain.Projects.Add(new Project() { Name = match.Value.Substring(1) });
+                }
+                foreach (Match match in Regex.Matches(domain.Description, @"\>\S+"))
+                {
+                    domain.Tasks.Add(new Core.DAL.Project.Task() { Name = match.Value.Substring(1) });
+                }
             }
             return domain;
         }
