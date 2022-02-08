@@ -31,6 +31,25 @@ namespace TimeLogger_v2.Database.TimeEntry
 
         #region ITimeEntryService implementation
 
+        public async Task<Guid> CreateEntry(string username, Core.DAL.TimeLog.TimeEntry entry)
+        {
+            var id = Guid.NewGuid();
+            await Task.Run(() =>
+            {
+                var sw = Stopwatch.StartNew();
+                var databaseName = GetDatabaseFullNameForUser(username);
+                using (var db = new LiteDatabase(databaseName))
+                {
+                    var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
+                    colEntries.Insert(entry);
+                    colEntries.EnsureIndex(e => e.Id);
+                }
+                sw.Stop();
+                _logger.LogDebug("{0} ms\tCreateEntry", sw.ElapsedMilliseconds);
+            });
+            return id;
+        }
+
         public async Task<IEnumerable<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>> GetAllUserEntriesForDate(string username, DateTime dateOfEntries)
         {
             List<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry> entries = null;

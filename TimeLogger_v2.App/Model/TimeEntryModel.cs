@@ -30,14 +30,6 @@ namespace TimeLogger_v2.App.Model
 
         public TimeEntryModel() { }
 
-        public TimeEntryModel(TimeEntry timeEntryFromDb) : this()
-        {
-            Id = timeEntryFromDb.Id;
-            BeginIsoDateTime = timeEntryFromDb.Begin?.ToString("yyyy-MM-dd HH:mm:ss");
-            EndIsoDateTime = timeEntryFromDb.End?.ToString("yyyy-MM-dd HH:mm:ss");
-            Description = timeEntryFromDb.Description;
-        }
-
         #endregion
 
     }

@@ -59,7 +59,7 @@ namespace TimeLogger_v2.App
                         OnRedirectToLogin = redirectContext =>
                         {
                             redirectContext.HttpContext.Response.StatusCode = 401;
-                            return Task.CompletedTask;
+                            return System.Threading.Tasks.Task.CompletedTask;
                         }
                     };
                 });

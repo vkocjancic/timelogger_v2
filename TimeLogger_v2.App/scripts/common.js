@@ -35,16 +35,15 @@ export const timeEntryFormatter = {
     fromInputFieldToObject: function (date, inputText) {
         var matchTime = inputText.match(/(\@\d{1,2}\:{0,1}\d{2})(\-{0,1}\d{1,2}\:{0,1}\d{2}){0,1}/),
             matchTasks = (inputText.match(/\>\S+/g) || []).map(t => t.slice(1)),
-            matchChannels = (inputText.match(/\#\S+/g) || []).map(c => c.slice(1)),
+            matchProjects = (inputText.match(/\#\S+/g) || []).map(c => c.slice(1)),
             matchDescription = (inputText.replace(/(\@\S+)/g, '') || '').trim();
         var entry = {
             begin: timeEntryFormatter.fromInputTypeToISODate(date, matchTime[1]),
             end: timeEntryFormatter.fromInputTypeToISODate(date, matchTime[2]),
             description: matchDescription,
             tasks: matchTasks,
-            channels: matchChannels
+            projects: matchProjects
         };
-        console.log(matchTime);
         return entry;
     },
 

@@ -9,6 +9,6 @@ namespace TimeLogger_v2.Core.DAL.TimeLog
     {
 
         Task<IEnumerable<TimeEntry>> GetAllUserEntriesForDate(string username, DateTime dateOfEntries);
-
+        Task<Guid> CreateEntry(string username, TimeEntry entry);
     }
 }

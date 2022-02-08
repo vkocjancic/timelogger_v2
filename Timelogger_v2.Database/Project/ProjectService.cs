@@ -34,7 +34,7 @@ namespace TimeLogger_v2.Database.Project
         public async Task<IEnumerable<TimeLogger_v2.Core.DAL.Project.Project>> GetAllUserProjects(string username)
         {
             List<TimeLogger_v2.Core.DAL.Project.Project> projects = null;
-            await Task.Run(() =>
+            await System.Threading.Tasks.Task.Run(() =>
             {
                 var sw = Stopwatch.StartNew();
                 var databaseName = GetDatabaseFullNameForUser(username);

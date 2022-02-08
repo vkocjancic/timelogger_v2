@@ -1,4 +1,5 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
+import { sessionStore } from './clientstore.js';
 import { DateNavigatorComponent } from './shared.js';
 import { dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
@@ -29,8 +30,8 @@ let templateHome =
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
     '                    <td class="table__col table__col--actions">' +
-    '                        <a href="#" class="btn btn--sm btn--secondary" v-if="timeEntry.isEdited">Cancel</a>' +
-    '                        <a href="#" class="btn btn--sm" v-else>Edit</a>' +
+    '                        <a href="#" class="btn btn--sm btn--secondary" v-if="selectedEntryId === timeEntry.id">Cancel</a>' +
+    '                        <a href="#" class="btn btn--sm" v-else v-on:click.prevent="setEntryToEdit(timeEntry.id)">Edit</a>' +
     '                    </td>' +
     '                </tr>' +
     '            </tbody>' +
@@ -46,7 +47,8 @@ let templateHome =
     '                            </fieldset>'+
     '                            <div class="timelog__form--actions">'+
     '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
-    '                                <button class="btn btn--sm btn--secondary">Delete</button>'+
+    '                                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>'+
+    '                                <button class="btn btn--sm btn--secondary" v-if="selectedEntryId">Delete</button>'+
     '                            </div>'+
     '                        </form>'+
     '                    </td>'+
@@ -64,6 +66,7 @@ export const HomeComponent = {
                 entryText: ''
             },
             selectedDate: dateFormatter.toIsoDate(new Date()),
+            selectedEntryId: null,
             showAlert: false,
             timeEntries: [],
             totalDuration: '0m',
@@ -73,34 +76,41 @@ export const HomeComponent = {
         this.fetchData();
     },
     methods: {
+        clearTimeEntry: function (event) {
+            this.input.entryText = '';
+        },
+
         fetchData: function () {
-            var dailyLogs = this;
+            var dailyLogs = this,
+                router = this.$router;
             axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate }}).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
                 entries.forEach((entry) => {
                     var newEntry = dailyLogs.newEntryFromApiEntry(entry);
                     dailyLogs.timeEntries.push(newEntry);
-                    totalDuration += newEntry.duration;
                 });
-                dailyLogs.totalDuration = durationFormatter.fromDuration(totalDuration);
+                dailyLogs.recalculateTotalDuration();
             }).catch(function (error) {
-                //if (error.response.status === 400) {
-                //    dailyLogs.alertMessage = (error.response.data.errorMessage) ? error.response.data.errorMessage : error.response.data;
-                //}
-                //else {
-                //    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
-                //}
-                console.log(error);
+                if (error.response.status === 401 || error.response.status === 403) {
+                    sessionStore.setter.isLoggedIn(false);
+                    router.push('/');
+                }
+                else {
+                    dailyLogs.alertMessage = 'Oops.Something went wrong.Please, try again later';
+                    dailyLogs.showAlert = true;
+                }
             });
         },
 
         handleDateChange: function (newDate) {
-            selectedDate = newDate;
+            var dailyLogs = this;
+            dailyLogs.selectedDate = newDate;
+            dailyLogs.fetchData();
         },
 
         newEntryFromApiEntry: function (entry) {
-            var newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isEdited: false };
+            var newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: ''};
             if (entry.begin) {
                 newEntry.begin = dateFormatter.fromApiDateTime(entry.begin);
             }
@@ -112,11 +122,48 @@ export const HomeComponent = {
             return newEntry;
         },
 
+        recalculateTotalDuration: function () {
+            var dailyLogs = this,
+                totalDuration = 0;
+            dailyLogs.timeEntries.forEach((entry) => {
+                totalDuration += entry.duration;
+            });
+            dailyLogs.totalDuration = durationFormatter.fromDuration(totalDuration);
+        },
+
+        setEntryToEdit: function (entryId) {
+            var dailyLogs = this;
+            dailyLogs.selectedEntryId = entryId;
+            //TODO: decide what to do with this...
+        },
+
         submitTimeEntry: function (event) {
             var dailyLogs = this,
-                // TODO: date must be obtained from navigation
-                entryFromString = timeEntryFormatter.fromInputFieldToObject('2022-01-24', dailyLogs.input.entryText);
-            // TODO: save new time entry and redisplay it later
+                entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
+                entryTemporary = dailyLogs.newEntryFromApiEntry(entryFromString),
+                extid = Date.now();
+            // set external id, add entry directly to timeEntriesArray and recalculate duration
+            entryTemporary.extId = extid;
+            dailyLogs.timeEntries.push(entryTemporary);
+            dailyLogs.recalculateTotalDuration();
+            // clear input field
+            dailyLogs.input.entryText = '';
+            // submit entry to server
+            axios.post('api/timeentry/create', entryFromString).then(function (response) {
+                var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
+                    newEntry = dailyLogs.newEntryFromApiEntry(response.data);
+                dailyLogs.timeEntries[ixEntry].id = newEntry.id;
+                console.log(dailyLogs.timeEntries[ixEntry]);
+            }).catch(function (error) {
+                if (error.response.status === 401 || error.response.status === 403) {
+                    sessionStore.setter.isLoggedIn(false);
+                    router.push('/');
+                }
+                else {
+                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
+                    dailyLogs.showAlert = true;
+                }
+            });
         }
 
     },

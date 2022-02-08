@@ -16,7 +16,7 @@ namespace TimeLogger_v2.Core.DAL.Project
 
         #region Properties
 
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         public string Name { get; set; }
 
