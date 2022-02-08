@@ -21,7 +21,8 @@ const routes = [
     { path: '/', redirect: { name: 'Home' } }
 ];
 
-const router = new VueRouter({
+const router = VueRouter.createRouter({
+    history: VueRouter.createWebHashHistory(),
     routes
 });
 
@@ -38,6 +39,6 @@ router.beforeEach((to, from, next) => {
     }
 })
 
-var vue_app = new Vue({
-    router
-}).$mount("#app");
+const vue_app = Vue.createApp({});
+vue_app.use(router);
+vue_app.mount('#app');
