@@ -60,5 +60,17 @@ export const timeEntryFormatter = {
             time = time.padStart(5, '0');
         }
         return date + ' ' + time;
+    },
+
+    fromObjectToInputField: function (entry) {
+        var description = '';
+        description += '@' + entry.begin;
+        if (entry.end) {
+            description += '-' + entry.end;
+        }
+        if (entry.description) {
+            description += ' ' + entry.description;
+        }
+        return description.trim();
     }
 }

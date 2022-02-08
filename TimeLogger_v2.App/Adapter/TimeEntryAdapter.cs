@@ -39,6 +39,10 @@ namespace TimeLogger_v2.App.Adapter
                 Description = model.Description,
                 End = (string.IsNullOrEmpty(model.EndIsoDateTime)) ? null : DateTime.ParseExact(model.EndIsoDateTime, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
             };
+            if (model.Id != Guid.Empty)
+            {
+                domain.Id = model.Id;
+            }
             domain.Projects = new List<Project>();
             foreach (Match match in Regex.Matches(domain.Description, @"\#\S+"))
             {

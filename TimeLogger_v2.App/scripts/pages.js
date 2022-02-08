@@ -30,7 +30,7 @@ let templateHome =
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
     '                    <td class="table__col table__col--actions">' +
-    '                        <a href="#" class="btn btn--sm btn--secondary" v-if="selectedEntryId === timeEntry.id">Cancel</a>' +
+    '                        <a href="#" class="btn btn--sm btn--secondary" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()">Cancel</a>' +
     '                        <a href="#" class="btn btn--sm" v-else v-on:click.prevent="setEntryToEdit(timeEntry.id)">Edit</a>' +
     '                    </td>' +
     '                </tr>' +
@@ -48,7 +48,7 @@ let templateHome =
     '                            <div class="timelog__form--actions">'+
     '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
     '                                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>'+
-    '                                <button class="btn btn--sm btn--secondary" v-if="selectedEntryId">Delete</button>'+
+    '                                <button class="btn btn--sm btn--secondary" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>'+
     '                            </div>'+
     '                        </form>'+
     '                    </td>'+
@@ -76,8 +76,18 @@ export const HomeComponent = {
         this.fetchData();
     },
     methods: {
+        clearEntryFromEdit: function (event) {
+            var dailyLogs = this;
+            dailyLogs.selectedEntryId = null;
+            dailyLogs.clearTimeEntry(event);
+        },
+
         clearTimeEntry: function (event) {
             this.input.entryText = '';
+        },
+
+        deleteTimeEntry: function (event) {
+            //TODO: implement this!
         },
 
         fetchData: function () {
@@ -109,6 +119,33 @@ export const HomeComponent = {
             dailyLogs.fetchData();
         },
 
+        insertTimeEntry: function () {
+            var dailyLogs = this,
+                entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
+                entryTemporary = dailyLogs.newEntryFromApiEntry(entryFromString),
+                extid = Date.now();
+            // set external id, add entry directly to timeEntriesArray and recalculate duration
+            entryTemporary.extId = extid;
+            dailyLogs.timeEntries.push(entryTemporary);
+            dailyLogs.recalculateTotalDuration();
+            dailyLogs.clearTimeEntry();
+            // submit entry to server
+            axios.post('api/timeentry/create', entryFromString).then(function (response) {
+                var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
+                    newEntry = dailyLogs.newEntryFromApiEntry(response.data);
+                dailyLogs.timeEntries[ixEntry].id = newEntry.id;
+            }).catch(function (error) {
+                if (error.response.status === 401 || error.response.status === 403) {
+                    sessionStore.setter.isLoggedIn(false);
+                    router.push('/');
+                }
+                else {
+                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
+                    dailyLogs.showAlert = true;
+                }
+            });
+        },
+
         newEntryFromApiEntry: function (entry) {
             var newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: ''};
             if (entry.begin) {
@@ -132,28 +169,39 @@ export const HomeComponent = {
         },
 
         setEntryToEdit: function (entryId) {
-            var dailyLogs = this;
-            dailyLogs.selectedEntryId = entryId;
-            //TODO: decide what to do with this...
+            var dailyLogs = this,
+                ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
+                entry;
+            if (ixEntry == -1) {
+                return;
+            }
+            entry = dailyLogs.timeEntries[ixEntry];
+            dailyLogs.selectedEntryId = entry.id;
+            dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(entry);
         },
 
         submitTimeEntry: function (event) {
+            var dailyLogs = this;
+            if (dailyLogs.selectedEntryId) {
+                dailyLogs.updateTimeEntry();
+            }
+            else {
+                dailyLogs.insertTimeEntry();
+            }
+        },
+
+        updateTimeEntry: function () {
             var dailyLogs = this,
                 entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
-                entryTemporary = dailyLogs.newEntryFromApiEntry(entryFromString),
-                extid = Date.now();
-            // set external id, add entry directly to timeEntriesArray and recalculate duration
-            entryTemporary.extId = extid;
-            dailyLogs.timeEntries.push(entryTemporary);
+                ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === dailyLogs.selectedEntryId);
+            entryFromString.id = dailyLogs.selectedEntryId;
+            // copy new object back into the stack
+            dailyLogs.timeEntries[ixEntry] = dailyLogs.newEntryFromApiEntry(entryFromString);
             dailyLogs.recalculateTotalDuration();
-            // clear input field
-            dailyLogs.input.entryText = '';
+            dailyLogs.clearEntryFromEdit();
             // submit entry to server
-            axios.post('api/timeentry/create', entryFromString).then(function (response) {
-                var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
-                    newEntry = dailyLogs.newEntryFromApiEntry(response.data);
-                dailyLogs.timeEntries[ixEntry].id = newEntry.id;
-                console.log(dailyLogs.timeEntries[ixEntry]);
+            axios.put('api/timeentry/update', entryFromString).then(function (response) {
+                // we don't need to do anything
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);

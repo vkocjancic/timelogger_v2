@@ -61,7 +61,7 @@ namespace TimeLogger_v2.Database.TimeEntry
                 {
                     var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
                     entries = colEntries
-                        .Find(e => e.Begin >= dateOfEntries && (!e.End.HasValue || e.End <= dateOfEntries))
+                        .Find(e => e.Begin >= dateOfEntries && (!e.End.HasValue || e.End < dateOfEntries.AddDays(1)))
                         .OrderBy(d => d.Begin)
                         .ToList();
                 }
@@ -69,6 +69,40 @@ namespace TimeLogger_v2.Database.TimeEntry
                 _logger.LogDebug("{0} ms\tGetAllUserEntriesForDate", sw.ElapsedMilliseconds);
             });
             return entries;
+        }
+
+        public async Task<bool> UpdateEntry(string username, Core.DAL.TimeLog.TimeEntry entry)
+        {
+            var result = true;
+            await Task.Run(() =>
+            {
+                var sw = Stopwatch.StartNew();
+                var databaseName = GetDatabaseFullNameForUser(username);
+                using (var db = new LiteDatabase(databaseName))
+                {
+                    var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
+                    var entryFromDb = colEntries
+                        .FindOne(e => e.Id == entry.Id);
+                    if (null == entryFromDb)
+                    {
+                        result = false;
+                    }
+                    else
+                    {
+                        entryFromDb.Begin = entry.Begin;
+                        entryFromDb.Description = entry.Description;
+                        entryFromDb.End = entry.End;
+                        entryFromDb.Projects = new List<Core.DAL.Project.Project>();
+                        entryFromDb.Projects.AddRange(entry.Projects);
+                        entryFromDb.Tasks = new List<Core.DAL.Project.Task>();
+                        entryFromDb.Tasks.AddRange(entry.Tasks);
+                        colEntries.Update(entryFromDb);
+                    }
+                }
+                sw.Stop();
+                _logger.LogDebug("{0} ms\tCreateEntry", sw.ElapsedMilliseconds);
+            });
+            return result;
         }
 
         #endregion
