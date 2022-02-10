@@ -79,7 +79,7 @@ namespace TimeLogger_v2.Database.TimeEntry
                 {
                     var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
                     entries = colEntries
-                        .Find(e => e.Begin >= dateOfEntries && (!e.End.HasValue || e.End < dateOfEntries.AddDays(1)))
+                        .Find(e => e.Begin.Value.Date == dateOfEntries.Date && (!e.End.HasValue || e.End.Value.Date == dateOfEntries.Date))
                         .OrderBy(d => d.Begin)
                         .ToList();
                 }
