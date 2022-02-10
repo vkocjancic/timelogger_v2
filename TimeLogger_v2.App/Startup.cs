@@ -20,6 +20,8 @@ using TimeLogger_v2.Core.DAL.Project;
 using TimeLogger_v2.Database.Project;
 using TimeLogger_v2.Core.DAL.TimeLog;
 using TimeLogger_v2.Database.TimeEntry;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 namespace TimeLogger_v2.App
 {
@@ -49,6 +51,8 @@ namespace TimeLogger_v2.App
         {
             services.AddOptions();
             services.AddResponseCompression();
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@".\"));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
