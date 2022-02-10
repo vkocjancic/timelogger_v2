@@ -112,6 +112,7 @@ export const HomeComponent = {
         fetchData: function () {
             var dailyLogs = this,
                 router = this.$router;
+            dailyLogs.timeEntries = [];
             axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate }}).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
