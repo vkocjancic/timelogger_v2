@@ -83,7 +83,7 @@ namespace TimeLogger_v2.App.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> Update([FromBody] TimeEntryModel model)
         {
             var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;

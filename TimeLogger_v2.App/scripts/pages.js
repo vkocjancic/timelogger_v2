@@ -219,7 +219,7 @@ export const HomeComponent = {
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
             // submit entry to server
-            axios.put('api/timeentry/update', entryFromString).then(function (response) {
+            axios.post('api/timeentry/update', entryFromString).then(function (response) {
                 // we don't need to do anything
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
