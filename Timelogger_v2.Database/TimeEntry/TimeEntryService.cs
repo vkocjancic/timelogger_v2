@@ -110,10 +110,8 @@ namespace TimeLogger_v2.Database.TimeEntry
                         entryFromDb.Begin = entry.Begin;
                         entryFromDb.Description = entry.Description;
                         entryFromDb.End = entry.End;
-                        entryFromDb.Projects = new List<Core.DAL.Project.Project>();
-                        entryFromDb.Projects.AddRange(entry.Projects);
-                        entryFromDb.Tasks = new List<Core.DAL.Project.Task>();
-                        entryFromDb.Tasks.AddRange(entry.Tasks);
+                        entryFromDb.Tags = new List<Tag>();
+                        entryFromDb.Tags.AddRange(entry.Tags);
                         colEntries.Update(entryFromDb);
                     }
                 }

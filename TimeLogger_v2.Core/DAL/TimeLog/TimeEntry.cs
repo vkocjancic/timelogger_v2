@@ -22,9 +22,7 @@ namespace TimeLogger_v2.Core.DAL.TimeLog
 
         public string Description { get; set; }
 
-        public List<Project.Project> Projects { get; set; }
-
-        public List<Project.Task> Tasks { get; set; }
+        public List<Tag> Tags { get; set; }
 
         #endregion
 

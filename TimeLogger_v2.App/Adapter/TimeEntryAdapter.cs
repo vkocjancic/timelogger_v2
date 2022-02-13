@@ -49,17 +49,12 @@ namespace TimeLogger_v2.App.Adapter
             {
                 domain.Id = model.Id;
             }
-            domain.Projects = new List<Project>();
-            domain.Tasks = new List<Core.DAL.Project.Task>();
+            domain.Tags = new List<Tag>();
             if (!string.IsNullOrEmpty(domain.Description))
             {
-                foreach (Match match in Regex.Matches(domain.Description, @"\#\S+"))
+                foreach (Match match in Regex.Matches(domain.Description, @"(\#|\>)\S+"))
                 {
-                    domain.Projects.Add(new Project() { Name = match.Value.Substring(1) });
-                }
-                foreach (Match match in Regex.Matches(domain.Description, @"\>\S+"))
-                {
-                    domain.Tasks.Add(new Core.DAL.Project.Task() { Name = match.Value.Substring(1) });
+                    domain.Tags.Add(new Tag(match.Value.Substring(1)));
                 }
             }
             return domain;
