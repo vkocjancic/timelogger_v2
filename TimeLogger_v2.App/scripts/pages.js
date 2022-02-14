@@ -30,8 +30,8 @@ let templateHome =
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
     '                    <td class="table__col table__col--actions">' +
-    '                        <a href="#" class="btn btn--sm btn--secondary" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()">Cancel</a>' +
-    '                        <a href="#" class="btn btn--sm" v-else v-on:click.prevent="setEntryToEdit(timeEntry.id)">Edit</a>' +
+    '                        <a href="#" class="btn btn--sm btn--secondary" title="Cancel" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()"><i class="icon action__cancel"></i></a>' +
+    '                        <a href="#" class="btn btn--sm" title="Edit" v-else v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
     '                    </td>' +
     '                </tr>' +
     '            </tbody>' +

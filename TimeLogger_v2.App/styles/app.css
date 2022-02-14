@@ -190,7 +190,7 @@ h1, h2, h3 {
     margin: var(--pt-2) 0 var(--pt-sm);
 }
 
-/* navigation links */
+/* elements with icons */
 .icon::before {
     display: inline-block;
     font-family: var(--ff-fa);
@@ -228,6 +228,15 @@ h1, h2, h3 {
 
 .page__project--add::before {
     content: "\f067";
+}
+
+.action__cancel::before {
+    color: var(--clr-grey);
+    content: "\f00d";
+}
+
+.action__edit::before {
+    content: "\f304";
 }
 
 /* content */
