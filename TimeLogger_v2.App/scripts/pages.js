@@ -76,10 +76,12 @@ export const HomeComponent = {
         this.fetchData();
     },
     methods: {
+
         clearEntryFromEdit: function (event) {
-            var dailyLogs = this;
+            let dailyLogs = this;
             dailyLogs.selectedEntryId = null;
             dailyLogs.clearTimeEntry(event);
+            dailyLogs.setAlert();
         },
 
         clearTimeEntry: function (event) {
@@ -87,13 +89,14 @@ export const HomeComponent = {
         },
 
         deleteTimeEntry: function (event) {
-            var dailyLogs = this,
+            let dailyLogs = this,
                 ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === dailyLogs.selectedEntryId),
                 ix = dailyLogs.selectedEntryId;
             // copy new object back into the stack
             dailyLogs.timeEntries.splice(ixEntry, 1);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
+            dailyLogs.setAlert();
             // submit entry to server
             axios.post('api/timeentry/delete', { Id: ix }).then(function (response) {
                 // we don't need to do anything
@@ -103,16 +106,16 @@ export const HomeComponent = {
                     router.push('/');
                 }
                 else {
-                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
-                    dailyLogs.showAlert = true;
+                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
         },
 
         fetchData: function () {
-            var dailyLogs = this,
+            let dailyLogs = this,
                 router = this.$router;
             dailyLogs.timeEntries = [];
+            dailyLogs.setAlert();
             axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate }}).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
@@ -127,20 +130,19 @@ export const HomeComponent = {
                     router.push('/');
                 }
                 else {
-                    dailyLogs.alertMessage = 'Oops.Something went wrong.Please, try again later';
-                    dailyLogs.showAlert = true;
+                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
         },
 
         handleDateChange: function (newDate) {
-            var dailyLogs = this;
+            let dailyLogs = this;
             dailyLogs.selectedDate = newDate;
             dailyLogs.fetchData();
         },
 
         insertTimeEntry: function () {
-            var dailyLogs = this,
+            let dailyLogs = this,
                 entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
                 entryTemporary = dailyLogs.newEntryFromApiEntry(entryFromString),
                 extid = Date.now();
@@ -149,6 +151,7 @@ export const HomeComponent = {
             dailyLogs.timeEntries.push(entryTemporary);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearTimeEntry();
+            dailyLogs.setAlert();
             // submit entry to server
             axios.post('api/timeentry/create', entryFromString).then(function (response) {
                 var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
@@ -160,14 +163,13 @@ export const HomeComponent = {
                     router.push('/');
                 }
                 else {
-                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
-                    dailyLogs.showAlert = true;
+                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
         },
 
         newEntryFromApiEntry: function (entry) {
-            var newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: ''};
+            let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: ''};
             if (entry.begin) {
                 newEntry.begin = dateFormatter.fromApiDateTime(entry.begin);
             }
@@ -180,7 +182,7 @@ export const HomeComponent = {
         },
 
         recalculateTotalDuration: function () {
-            var dailyLogs = this,
+            let dailyLogs = this,
                 totalDuration = 0;
             dailyLogs.timeEntries.forEach((entry) => {
                 totalDuration += entry.duration;
@@ -188,10 +190,17 @@ export const HomeComponent = {
             dailyLogs.totalDuration = durationFormatter.fromDuration(totalDuration);
         },
 
+        setAlert: function (message) {
+            let dailyLogs = this;
+            dailyLogs.showAlert = (message) ? true : false;
+            dailyLogs.alertMessage = message;
+        },
+
         setEntryToEdit: function (entryId) {
-            var dailyLogs = this,
+            let dailyLogs = this,
                 ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
                 entry;
+            dailyLogs.setAlert();
             if (ixEntry == -1) {
                 return;
             }
@@ -201,7 +210,7 @@ export const HomeComponent = {
         },
 
         submitTimeEntry: function (event) {
-            var dailyLogs = this;
+            let dailyLogs = this;
             if (dailyLogs.selectedEntryId) {
                 dailyLogs.updateTimeEntry();
             }
@@ -211,7 +220,7 @@ export const HomeComponent = {
         },
 
         updateTimeEntry: function () {
-            var dailyLogs = this,
+            let dailyLogs = this,
                 entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
                 ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === dailyLogs.selectedEntryId);
             entryFromString.id = dailyLogs.selectedEntryId;
@@ -219,6 +228,7 @@ export const HomeComponent = {
             dailyLogs.timeEntries[ixEntry] = dailyLogs.newEntryFromApiEntry(entryFromString);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
+            dailyLogs.setAlert();
             // submit entry to server
             axios.post('api/timeentry/update', entryFromString).then(function (response) {
                 // we don't need to do anything
@@ -228,8 +238,7 @@ export const HomeComponent = {
                     router.push('/');
                 }
                 else {
-                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
-                    dailyLogs.showAlert = true;
+                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
         }
