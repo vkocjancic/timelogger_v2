@@ -9,7 +9,7 @@ namespace TimeLogger_v2.Core.DAL
 
         #region Properties
 
-        public Guid Id { get; set; }
+        public Guid UniqueId { get; set; }
 
         #endregion
 

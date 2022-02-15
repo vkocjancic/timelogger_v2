@@ -26,7 +26,7 @@ namespace TimeLogger_v2.App.Model
 
         public ProjectModel(Project projectFromDb) : this()
         {
-            Id = projectFromDb.Id;
+            Id = projectFromDb.UniqueId;
             Name = projectFromDb.Name;
         }
 

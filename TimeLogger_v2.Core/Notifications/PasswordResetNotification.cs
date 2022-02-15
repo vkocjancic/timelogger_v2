@@ -28,7 +28,7 @@ namespace TimeLogger_v2.Core.Notifications
         {
             Subject = "TimeLogger: Password reset request";
             var tagReplacements = new Dictionary<string, string>();
-            tagReplacements.Add("ID", _pwdReset.Id.ToString());
+            tagReplacements.Add("ID", _pwdReset.UniqueId.ToString());
             return await GenerateMessageContent("passwordreset.html", tagReplacements);
         }
 

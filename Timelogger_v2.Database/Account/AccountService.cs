@@ -132,7 +132,7 @@ namespace TimeLogger_v2.Database.Account
                 {
                     var colPwdReset = db.GetCollection<Core.DAL.Account.PasswordReset>(Core.DAL.Account.PasswordReset.Collection);
                     var pwdReset = colPwdReset.Query()
-                        .Where(a => a.Id == passwordResetId && !a.IsUsed && a.Timestamp.AddHours(2) > DateTime.Now)
+                        .Where(a => a.UniqueId == passwordResetId && !a.IsUsed && a.Timestamp.AddHours(2) > DateTime.Now)
                         .FirstOrDefault();
                     canResetPassword = (null != pwdReset);
                 }
@@ -157,7 +157,7 @@ namespace TimeLogger_v2.Database.Account
                     {
                         Created = DateTime.Now,
                         Email = username,
-                        Id = Guid.NewGuid(),
+                        UniqueId = Guid.NewGuid(),
                         IsActive = true,
                         Password = pwdHash,
                         Salt = salt
@@ -181,7 +181,7 @@ namespace TimeLogger_v2.Database.Account
                     var colPwdReset = db.GetCollection<PasswordReset>(PasswordReset.Collection);
                     pwdResetEntry = new PasswordReset()
                     {
-                        Id = Guid.NewGuid(),
+                        UniqueId = Guid.NewGuid(),
                         IpAddress = remoteIpAddress.ToString(),
                         IsUsed = false,
                         Timestamp = DateTime.Now,
@@ -229,7 +229,7 @@ namespace TimeLogger_v2.Database.Account
                 var colAudit = db.GetCollection<Audit>(Audit.Collection);
                 colAudit.Insert(new Audit()
                 {
-                    Id = Guid.NewGuid(),
+                    UniqueId = Guid.NewGuid(),
                     IpAddress = remoteIpAddress.ToString(),
                     IsSuccessful = isSuccessful,
                     Timestamp = DateTime.Now,
@@ -251,7 +251,7 @@ namespace TimeLogger_v2.Database.Account
                 {
                     var colPwdReset = db.GetCollection<PasswordReset>(PasswordReset.Collection);
                     pwdResetEntry = colPwdReset.Query()
-                        .Where(pr => pr.Id == passwordResetId && !pr.IsUsed)
+                        .Where(pr => pr.UniqueId == passwordResetId && !pr.IsUsed)
                         .FirstOrDefault();
                     if (null == pwdResetEntry)
                     {
