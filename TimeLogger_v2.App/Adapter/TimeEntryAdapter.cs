@@ -24,7 +24,7 @@ namespace TimeLogger_v2.App.Adapter
         {
             return new TimeEntryModel()
             {
-                Id = domain.UniqueId,
+                Id = domain.Id,
                 BeginIsoDateTime = domain.Begin?.ToString("yyyy-MM-dd HH:mm:ss"),
                 EndIsoDateTime = domain.End?.ToString("yyyy-MM-dd HH:mm:ss"),
                 Description = domain.Description
@@ -47,7 +47,7 @@ namespace TimeLogger_v2.App.Adapter
             }
             if (model.Id != Guid.Empty)
             {
-                domain.UniqueId = model.Id;
+                domain.Id = model.Id;
             }
             domain.Tags = new List<Tag>();
             if (!string.IsNullOrEmpty(domain.Description))

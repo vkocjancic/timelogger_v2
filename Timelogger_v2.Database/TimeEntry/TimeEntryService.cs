@@ -33,7 +33,7 @@ namespace TimeLogger_v2.Database.TimeEntry
 
         public async Task<Guid> CreateEntry(string username, Core.DAL.TimeLog.TimeEntry entry)
         {
-            var id = Guid.NewGuid();
+            entry.Id = Guid.NewGuid();
             await Task.Run(() =>
             {
                 var sw = Stopwatch.StartNew();
@@ -42,12 +42,12 @@ namespace TimeLogger_v2.Database.TimeEntry
                 {
                     var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
                     colEntries.Insert(entry);
-                    colEntries.EnsureIndex(e => e.UniqueId);
+                    colEntries.EnsureIndex(e => e.Id);
                 }
                 sw.Stop();
                 _logger.LogDebug("{0} ms\tCreateEntry", sw.ElapsedMilliseconds);
             });
-            return id;
+            return entry.Id;
         }
 
         public async Task<bool> DeleteEntry(string username, Core.DAL.TimeLog.TimeEntry entry)
@@ -60,7 +60,7 @@ namespace TimeLogger_v2.Database.TimeEntry
                 using (var db = new LiteDatabase(databaseName))
                 {
                     var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
-                    colEntries.DeleteMany(e => e.UniqueId == entry.UniqueId);
+                    colEntries.DeleteMany(e => e.Id == entry.Id);
                 }
                 sw.Stop();
                 _logger.LogDebug("{0} ms\tDeleteEntry", sw.ElapsedMilliseconds);
@@ -100,7 +100,7 @@ namespace TimeLogger_v2.Database.TimeEntry
                 {
                     var colEntries = db.GetCollection<TimeLogger_v2.Core.DAL.TimeLog.TimeEntry>(TimeLogger_v2.Core.DAL.TimeLog.TimeEntry.Collection);
                     var entryFromDb = colEntries
-                        .FindOne(e => e.UniqueId == entry.UniqueId);
+                        .FindOne(e => e.Id == entry.Id);
                     if (null == entryFromDb)
                     {
                         result = false;
@@ -113,7 +113,7 @@ namespace TimeLogger_v2.Database.TimeEntry
                         entryFromDb.Tags = new List<Tag>();
                         entryFromDb.Tags.AddRange(entry.Tags);
                         colEntries.Update(entryFromDb);
-                        colEntries.EnsureIndex(e => e.UniqueId);
+                        colEntries.EnsureIndex(e => e.Id);
                     }
                 }
                 sw.Stop();
