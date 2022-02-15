@@ -1,6 +1,6 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
 import { sessionStore } from './clientstore.js';
-import { DateNavigatorComponent } from './shared.js';
+import { DateNavigatorComponent, DropDownSelectorComponent } from './shared.js';
 import { dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
 /* * * * * * * * * * * * * * * * * * *
@@ -12,10 +12,11 @@ let templateHome =
     '        <h1 class="main__title--title">Daily logs</h1>' +
     '        <p class="main__title--sub">Logged today: <em class="main__title--info">{{totalDuration}}</em></p>' +
     '    </header>' +
+    '    <drop-down label="View as" :options="[{text:\'Input\', value:\'I\'}, {text:\'Summary\', value:\'S\'}]" v-on:change="handleViewChange"></drop-down>' +
     '    <date-navigator v-on:date-change="handleDateChange"></date-navigator>' +
     '    <section class="main__content">' +
     '        <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
-    '        <table class="table">'+
+    '        <table class="table" v-if="viewMode == 0">'+
     '            <thead>'+
     '                <tr>'+
     '                    <th class="table__col table__col--time">Begin</th>'+
@@ -54,7 +55,24 @@ let templateHome =
     '                    </td>'+
     '                </tr>'+
     '            </tfoot>'+
-    '        </table>'+
+    '        </table>' +
+    '        <table class="table" v-else>' +
+    '            <thead>' +
+    '                <tr>' +
+    '                    <th class="table__col">Description</th>' +
+    '                    <th class="table__col table__col--duration">Duration</th>' +
+    '                </tr>' +
+    '            </thead>' +
+    '            <tbody v-if="summaryEntries.length > 0">' +
+    '                <tr v-for="summaryEntry in summaryEntries">' +
+    '                    <td class="table__col">{{summaryEntry.title}}</td>' +
+    '                    <td class="table__col table__col--duration">{{summaryEntry.durationString}}</td>' +
+    '                </tr>' +
+    '            </tbody>' +
+    '            <tbody v-else>' +
+    '                <tr class="table__row--empty"><td colspan="2" class="table__col">It is rather lonely in here :( ...</td></tr>' +
+    '            </tbody>' +
+    '        </table>' +
     '    </section>' +
     '</layout-default>';
 
@@ -69,7 +87,9 @@ export const HomeComponent = {
             selectedEntryId: null,
             showAlert: false,
             timeEntries: [],
+            summaryEntries: [],
             totalDuration: '0m',
+            viewMode: 0
         }
     },
     created() {
@@ -141,6 +161,18 @@ export const HomeComponent = {
             dailyLogs.fetchData();
         },
 
+        handleViewChange: function (obj) {
+            let dailyLogs = this,
+                viewMode = obj.target.selectedOptions[0].value;
+            if (viewMode === 'S') {
+                dailyLogs.prepareSummaryView();
+                dailyLogs.viewMode = 1;
+            }
+            else {
+                dailyLogs.viewMode = 0;
+            }
+        },
+
         insertTimeEntry: function () {
             let dailyLogs = this,
                 entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
@@ -179,6 +211,33 @@ export const HomeComponent = {
             newEntry.duration = durationCalculator.calc(entry.begin, entry.end);
             newEntry.durationStr = durationFormatter.fromDuration(newEntry.duration);
             return newEntry;
+        },
+
+        prepareSummaryView: function () {
+            let dailyLogs = this;
+            dailyLogs.summaryEntries = [];
+            for (var i = 0; i < dailyLogs.timeEntries.length; i++) {
+                let entry = dailyLogs.timeEntries[i],
+                    tags = timeEntryFormatter.getTags(entry.description);
+                console.log(tags);
+                for (var j = 0; j < tags.length; j++) {
+                    let tag = tags[j],
+                        ix = dailyLogs.summaryEntries.findIndex(e => e.title == tag);
+                    console.log(tag, ix, entry.duration);
+                    if (ix === -1) {
+                        dailyLogs.summaryEntries.push({
+                            title: tag,
+                            duration: entry.duration,
+                            durationString: durationFormatter.fromDuration(entry.duration)
+                        });
+                    }
+                    else {
+                        console.log(dailyLogs.summaryEntries[ix]);
+                        dailyLogs.summaryEntries[ix].duration += entry.duration;
+                        dailyLogs.summaryEntries[ix].durationString = durationFormatter.fromDuration(dailyLogs.summaryEntries[ix].duration);
+                    }
+                }
+            }
         },
 
         recalculateTotalDuration: function () {
@@ -246,7 +305,8 @@ export const HomeComponent = {
     },
     components: {
         'layout-default': LayoutDefaultComponent,
-        'date-navigator': DateNavigatorComponent
+        'date-navigator': DateNavigatorComponent,
+        'drop-down': DropDownSelectorComponent
     },
     template: templateHome
 };

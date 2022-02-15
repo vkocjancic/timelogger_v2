@@ -20,3 +20,39 @@ export const DateNavigatorComponent = {
     template: templateDateNavigator
 };
 /* END DateNavigatorComponent        */
+
+
+
+/* * * * * * * * * * * * * * * * * * *
+ *   DropDownSelectorComponent       *
+ * * * * * * * * * * * * * * * * * * */
+let templateDropDownSelector =
+    '<section class="dd dd-pos-right">' +
+    '    <label for="view-selector" class="dd--label">{{label}}:</label>' +
+    '    <select name="view-selector" class="ctrl ctrl-inline dd--select" v-model="selectedValue">' +
+    '	     <option v-for="option in options" class="dd--option" :value="option.value" :selected="option.value == selectedValue">{{option.text}}</option>' +
+    '    </select>' +
+    '</section>';
+
+export const DropDownSelectorComponent = {
+    data() {
+        return {
+            selectedValue: ''
+        }
+    },
+
+    props: {
+        label: String,
+        options: Array
+    },
+
+    created() {
+        let dd = this;
+        if (dd.options) {
+            dd.selectedValue = dd.options[0].value;
+        }
+    },
+
+    template: templateDropDownSelector
+};
+/* END DropDownSelectorComponent     */

@@ -251,7 +251,7 @@ main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin: 0 calc(-1 * var(--pt-sm));
+    margin: 0 calc(-1 * var(--pt-sm)) var(--pt-1);
     padding: 0 var(--pt-sm) var(--pt-sm);
 }
 
@@ -338,6 +338,26 @@ main {
         outline: none;
     }
 
+.ctrl-inline {
+    padding: calc(var(--pad-form-el-top) / 2) calc(var(--pad-form-el-left) / 2);
+    width: auto;
+}
+
+/* drop downs */
+.dd,
+.dd--select,
+.dd--option {
+    font-size: var(--fs-footnote);
+}
+
+.dd--label {
+    margin-right: var(--pt-sm);
+}
+
+.dd-pos-right {
+    text-align: right;
+}
+
 /* alerts */
 .alert {
     border-left: 5px solid var(--clr-grey);
@@ -368,7 +388,8 @@ main {
     text-align: left;
 }
 
-.table__col--actions {
+.table__col--actions,
+.table__col--duration{
     padding-right: 0;
     text-align: right;
 }
@@ -418,7 +439,7 @@ main {
 }
 
 .date__nav {
-    margin-top: var(--pt-1);
+    margin-top: var(--pt-sm);
     text-align: center;
 }
 

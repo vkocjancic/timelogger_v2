@@ -34,7 +34,7 @@ export const durationFormatter = {
 export const timeEntryFormatter = {   
     fromInputFieldToObject: function (date, inputText) {
         var matchTime = inputText.match(/(\@\d{1,2}\:{0,1}\d{2})(\-{0,1}\d{1,2}\:{0,1}\d{2}){0,1}/),
-            matchTags = (inputText.match(/(\>|\#)\S+/g) || []).map(t => t.slice(1)),
+            matchTags = timeEntryFormatter.getTags(inputText),
             matchDescription = (inputText.replace(/(\@\S+)/g, '') || '').trim();
         return {
             begin: timeEntryFormatter.fromInputTypeToISODate(date, matchTime[1]),
@@ -69,5 +69,9 @@ export const timeEntryFormatter = {
             description += ' ' + entry.description;
         }
         return description.trim();
+    },
+
+    getTags: function (description) {
+        return (description.match(/(\>|\#)\S+/g) || []).map(t => t.slice(1));
     }
 }
