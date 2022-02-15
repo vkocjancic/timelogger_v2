@@ -226,7 +226,7 @@ export const HomeComponent = {
                     console.log(tag, ix, entry.duration);
                     if (ix === -1) {
                         dailyLogs.summaryEntries.push({
-                            title: tag,
+                            title: '#' + tag,
                             duration: entry.duration,
                             durationString: durationFormatter.fromDuration(entry.duration)
                         });
