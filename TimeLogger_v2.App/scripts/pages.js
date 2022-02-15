@@ -221,12 +221,12 @@ export const HomeComponent = {
                     tags = timeEntryFormatter.getTags(entry.description);
                 console.log(tags);
                 for (var j = 0; j < tags.length; j++) {
-                    let tag = tags[j],
+                    let tag = '#' + tags[j],
                         ix = dailyLogs.summaryEntries.findIndex(e => e.title == tag);
                     console.log(tag, ix, entry.duration);
                     if (ix === -1) {
                         dailyLogs.summaryEntries.push({
-                            title: '#' + tag,
+                            title: tag,
                             duration: entry.duration,
                             durationString: durationFormatter.fromDuration(entry.duration)
                         });
