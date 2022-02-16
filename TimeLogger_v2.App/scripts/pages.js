@@ -219,11 +219,9 @@ export const HomeComponent = {
             for (var i = 0; i < dailyLogs.timeEntries.length; i++) {
                 let entry = dailyLogs.timeEntries[i],
                     tags = timeEntryFormatter.getTags(entry.description);
-                console.log(tags);
                 for (var j = 0; j < tags.length; j++) {
                     let tag = '#' + tags[j],
                         ix = dailyLogs.summaryEntries.findIndex(e => e.title == tag);
-                    console.log(tag, ix, entry.duration);
                     if (ix === -1) {
                         dailyLogs.summaryEntries.push({
                             title: tag,
@@ -232,12 +230,20 @@ export const HomeComponent = {
                         });
                     }
                     else {
-                        console.log(dailyLogs.summaryEntries[ix]);
                         dailyLogs.summaryEntries[ix].duration += entry.duration;
                         dailyLogs.summaryEntries[ix].durationString = durationFormatter.fromDuration(dailyLogs.summaryEntries[ix].duration);
                     }
                 }
             }
+            dailyLogs.summaryEntries.sort(function (a, b) {
+                let titleA = a.title,
+                    titleB = b.title;
+                if (titleA < titleB)
+                    return -1;
+                if (titleA > titleB)
+                    return 1;
+                return 0;
+            });
         },
 
         recalculateTotalDuration: function () {
