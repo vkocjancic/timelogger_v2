@@ -26,7 +26,7 @@ let templateHome =
     '                </tr>'+
     '            </thead>' +
     '            <tbody v-if="timeEntries.length > 0">' +
-    '                <tr v-for="timeEntry in timeEntries" v-bind:class="{ \'table__row--edit\': timeEntry.isEdited }" >' +
+    '                <tr v-for="timeEntry in timeEntries" v-bind:class="{ \'table__row--edit\': selectedEntryId === timeEntry.id }" >' +
     '                    <td class="table__col">{{timeEntry.begin}}</td>' +
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +

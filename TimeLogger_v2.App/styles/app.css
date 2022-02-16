@@ -396,7 +396,6 @@ main {
 
 .table__row--edit .table__col, .table__row--empty .table__col {
     color: var(--clr-grey);
-    font-style: italic;
 }
 
 .table__row--edit .table__col--actions {
