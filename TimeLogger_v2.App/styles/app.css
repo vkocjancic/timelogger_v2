@@ -381,8 +381,12 @@ main {
     width: 100%;
 }
 
+    .table tr:nth-child(2n) {
+        background-color: var(--clr-white);
+    }
+
 .table__col {
-    border-bottom: solid 1px var(--clr-grey);
+    border-bottom: dotted 1px var(--clr-grey);
     padding: var(--pt-sm);
     padding-left: 0;
     text-align: left;
