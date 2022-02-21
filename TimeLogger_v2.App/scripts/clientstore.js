@@ -5,6 +5,9 @@
         },
         projects: function () {
             return JSON.parse(sessionStorage.getItem('projects'));
+        },
+        username: function () {
+            return sessionStorage.getItem('username');
         }
     },
     setter: {
@@ -13,6 +16,9 @@
         },
         projects: function (value) {
             sessionStorage.setItem('projects', JSON.stringify(value));
+        },
+        username: function (value) {
+            sessionStorage.setItem('username', value);
         }
     }
 };

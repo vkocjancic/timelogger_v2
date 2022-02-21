@@ -27,6 +27,16 @@ let templateLayoutDefault =
     '                </ul>' +
     '            </nav>' +
     '        </div>' +
+    '        <input type="checkbox" id="nav__sub--toggle" class="nav__sub--toggle" />' +
+    '        <label for="nav__sub--toggle" class="nav__sub--toggle-label">' +
+    '          <i></i>' +
+    '        </label>' +
+    '        <div class="nav__sub">' +
+    '          <h3>{{username}}</h3>' +
+    '          <ul>' +
+    '        	<li><router-link to="/logout">Sign out of TimeLogger</router-link></li>' +
+    '          </ul>' +
+    '        </div>' +
     '    </header>' +
     '    <main>' +
     '        <slot />' +
@@ -36,7 +46,8 @@ let templateLayoutDefault =
 export const LayoutDefaultComponent = {
     data() {
         return {
-            projects: []
+            projects: [],
+            username: sessionStore.getter.username()
         }
     },
     created() {

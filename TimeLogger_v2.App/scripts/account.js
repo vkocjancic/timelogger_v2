@@ -47,6 +47,7 @@ export const LoginComponent = {
                 password: login.input.password
             }).then(function (response) {
                 sessionStore.setter.isLoggedIn(true);
+                sessionStore.setter.username(login.input.username);
                 login.showAlert = false;
                 router.push(route.query.redirect || '/');
             }).catch(function (error) {
@@ -76,6 +77,29 @@ export const LoginComponent = {
     template: templateLogin
 };
 /* END LoginComponent                */
+
+/* * * * * * * * * * * * * * * * * * * 
+ *   LogoutComponent                 *
+ * * * * * * * * * * * * * * * * * * */
+
+export const LogoutComponent = {
+    created() {
+        this.doLogout();
+    },
+    methods: {
+        doLogout: function () {
+            var logout = this;
+            if (sessionStore.getter.isLoggedIn()) {
+                axios.post('/api/account/logout');
+                sessionStore.setter.username(null);
+                sessionStore.setter.isLoggedIn(false);
+            }
+            logout.$router.push('/');
+        }
+    },
+    template: ''
+};
+/* END LogoutComponent               */
 
 /* * * * * * * * * * * * * * * * * * *
  *   CreateAccountComponent          *

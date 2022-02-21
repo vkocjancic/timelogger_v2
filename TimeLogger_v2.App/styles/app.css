@@ -190,6 +190,91 @@ h1, h2, h3 {
     margin: var(--pt-2) 0 var(--pt-sm);
 }
 
+/* nav sub */
+.nav__sub--toggle {
+    display: none;
+}
+
+.nav__sub--toggle-label {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: var(--pt-1);
+}
+
+    .nav__sub--toggle-label i::before {
+        background-color: var(--clr-ligther-dark);
+        border: solid 1px var(--clr-dark-grey-hover);
+        border-radius: 7px;
+        color: var(--clr-white);
+        content: "\f118";
+        display: inline-block;
+        font-family: var(--ff-fa);
+        font-size: 2em;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 900;
+        padding: var(--pt-sm) calc(var(--pt-sm) + 0.2rem);
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+    }
+
+.nav__sub--toggle:checked ~ .nav__sub {
+    display: block;
+}
+
+.nav__sub {
+    background-color: var(--clr-dark);
+    border-top: solid 1px var(--clr-ligther-dark);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    box-shadow: 0px 0 12px var(--clr-dark);
+    color: var(--clr-white);
+    display: none;
+    padding: var(--pt-sm) 0;
+    position: absolute;
+    right: 0;
+    text-align: left;
+}
+
+    .nav__sub * {
+        color: var(--clr-grey);
+    }
+
+    .nav__sub ul {
+        border-top: solid 1px var(--clr-ligther-dark);
+        list-style: none;
+        margin: 0;
+        padding: var(--pt-sm) 0 0;
+    }
+
+    .nav__sub a,
+    .nav__sub h3 {
+        color: var(--clr-grey);
+        font-weight: 500;
+        padding: 0 var(--pt-1);
+    }
+
+    .nav__sub a {
+        display: block;
+        padding-top: calc(var(--pt-sm) / 2);
+        padding-bottom: calc(var(--pt-sm) / 2);
+        text-decoration: none;
+    }
+
+        .nav__sub a:focus,
+        .nav__sub a:active {
+            background-color: var(--clr-dark-grey-hover);
+        }
+
+        .nav__sub a:hover {
+            background-color: var(--clr-dark-grey-hover);
+        }
+
 /* elements with icons */
 .icon::before {
     display: inline-block;
