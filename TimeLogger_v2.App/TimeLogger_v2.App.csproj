@@ -61,6 +61,9 @@
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\templates\createnewaccount.html" />
   </ItemGroup>
 
@@ -72,9 +75,6 @@
   <ItemGroup>
     <None Update="C:\Users\vlado\.nuget\packages\nlog.config\4.7.0\contentFiles\any\any\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="favicon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
