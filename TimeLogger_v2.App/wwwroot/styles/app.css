@@ -408,6 +408,12 @@ main {
     color: var(--clr-white);
 }
 
+.btn--alert {
+    background-color: var(--clr-base);
+    border-color: var(--clr-base);
+    color: var(--clr-white);
+}
+
 /* input controls */
 .ctrl {
     border: 1px solid var(--clr-grey);

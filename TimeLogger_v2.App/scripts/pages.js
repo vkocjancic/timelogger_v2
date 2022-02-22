@@ -50,7 +50,7 @@ let templateHome =
     '                            <div class="timelog__form--actions">'+
     '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
     '                                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>'+
-    '                                <button class="btn btn--sm btn--secondary" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>'+
+    '                                <button class="btn btn--sm btn--alert" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>'+
     '                            </div>'+
     '                        </form>'+
     '                    </td>'+
