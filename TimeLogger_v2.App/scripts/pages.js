@@ -44,7 +44,8 @@ let templateHome =
     '                    <td colspan="4">'+
     '                        <form class="timelog__form" name="edit" novalidate="novalidate" v-on:submit.prevent="submitTimeEntry">'+
     '                            <fieldset>'+
-    '                                <input id="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for #Task #Project" autocomplete="off" v-model="input.entryText" /> '+
+    '                                <input id="inTimeLog" ref="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for #Task #Project" autocomplete="off"' +
+    '                                   v-model="input.entryText" /> ' +
     '                            </fieldset>'+
     '                            <div class="timelog__form--actions">'+
     '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
@@ -136,6 +137,7 @@ export const HomeComponent = {
                 router = this.$router;
             dailyLogs.timeEntries = [];
             dailyLogs.setAlert();
+            dailyLogs.focusTimeLogInput();
             axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate }}).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
@@ -152,6 +154,13 @@ export const HomeComponent = {
                 else {
                     dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
+            });
+        },
+
+        focusTimeLogInput: function () {
+            var dailyLogs = this;
+            dailyLogs.$nextTick(() => {
+                dailyLogs.$refs.inTimeLog.focus();
             });
         },
 
@@ -272,6 +281,7 @@ export const HomeComponent = {
             entry = dailyLogs.timeEntries[ixEntry];
             dailyLogs.selectedEntryId = entry.id;
             dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(entry);
+            dailyLogs.focusTimeLogInput();
         },
 
         submitTimeEntry: function (event) {
