@@ -3,6 +3,11 @@ import { sessionStore } from './clientstore.js';
 import { DateNavigatorComponent, DropDownSelectorComponent } from './shared.js';
 import { dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
+const ViewMode = {
+    INPUT: 0,
+    SUMMARY: 1
+};
+
 /* * * * * * * * * * * * * * * * * * *
  *   HomeComponent                   *
  * * * * * * * * * * * * * * * * * * */
@@ -90,7 +95,7 @@ export const HomeComponent = {
             timeEntries: [],
             summaryEntries: [],
             totalDuration: '0m',
-            viewMode: 0
+            viewMode: ViewMode.INPUT
         }
     },
     created() {
@@ -146,6 +151,9 @@ export const HomeComponent = {
                     dailyLogs.timeEntries.push(newEntry);
                 });
                 dailyLogs.recalculateTotalDuration();
+                if (dailyLogs.viewMode === ViewMode.SUMMARY) {
+                    dailyLogs.prepareSummaryView();
+                }
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
@@ -159,9 +167,11 @@ export const HomeComponent = {
 
         focusTimeLogInput: function () {
             var dailyLogs = this;
-            dailyLogs.$nextTick(() => {
-                dailyLogs.$refs.inTimeLog.focus();
-            });
+            if (dailyLogs.viewMode === ViewMode.INPUT) {
+                dailyLogs.$nextTick(() => {
+                    dailyLogs.$refs.inTimeLog.focus();
+                });
+            }
         },
 
         handleDateChange: function (newDate) {
@@ -175,10 +185,11 @@ export const HomeComponent = {
                 viewMode = obj.target.selectedOptions[0].value;
             if (viewMode === 'S') {
                 dailyLogs.prepareSummaryView();
-                dailyLogs.viewMode = 1;
+                dailyLogs.viewMode = ViewMode.SUMMARY;
             }
             else {
-                dailyLogs.viewMode = 0;
+                dailyLogs.viewMode = ViewMode.INPUT;
+                dailyLogs.focusTimeLogInput();
             }
         },
 
@@ -228,6 +239,9 @@ export const HomeComponent = {
             for (var i = 0; i < dailyLogs.timeEntries.length; i++) {
                 let entry = dailyLogs.timeEntries[i],
                     tags = timeEntryFormatter.getTags(entry.description);
+                if (tags.length === 0) {
+                    tags.push(entry.description);
+                }
                 for (var j = 0; j < tags.length; j++) {
                     let tag = '#' + tags[j],
                         ix = dailyLogs.summaryEntries.findIndex(e => e.title == tag);
