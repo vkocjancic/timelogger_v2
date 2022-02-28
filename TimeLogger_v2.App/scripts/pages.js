@@ -1,7 +1,7 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
 import { sessionStore } from './clientstore.js';
 import { DateNavigatorComponent, DropDownSelectorComponent } from './shared.js';
-import { dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
+import { dailyLogsSummary, dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
 const ViewMode = {
     INPUT: 0,
@@ -71,8 +71,16 @@ let templateHome =
     '            </thead>' +
     '            <tbody v-if="summaryEntries.length > 0">' +
     '                <tr v-for="summaryEntry in summaryEntries">' +
-    '                    <td class="table__col">{{summaryEntry.title}}</td>' +
-    '                    <td class="table__col table__col--duration">{{summaryEntry.durationString}}</td>' +
+    '                    <td class="table__col">#{{summaryEntry.tag}}' +
+    '                        <ul class="summary__details">' +
+    '                            <li v-for="entry in summaryEntry.entries" class="summary__details--item">{{entry.description}}</li>' +
+    '                        </ul>' +
+    '                    </td> ' +
+    '                    <td class="table__col table__col--duration">{{this.formatDuration(summaryEntry.duration)}}' +
+    '                        <ul class="summary__details">' +
+    '                            <li v-for="entry in summaryEntry.entries" class="summary__details--item">{{this.formatDuration(entry.duration)}}</li>' +
+    '                        </ul>' +
+    '                    </td>' +
     '                </tr>' +
     '            </tbody>' +
     '            <tbody v-else>' +
@@ -174,6 +182,10 @@ export const HomeComponent = {
             }
         },
 
+        formatDuration: function (value) {
+            return durationFormatter.fromDuration(value);
+        },
+
         handleDateChange: function (newDate) {
             let dailyLogs = this;
             dailyLogs.selectedDate = newDate;
@@ -235,36 +247,14 @@ export const HomeComponent = {
 
         prepareSummaryView: function () {
             let dailyLogs = this;
-            dailyLogs.summaryEntries = [];
-            for (var i = 0; i < dailyLogs.timeEntries.length; i++) {
-                let entry = dailyLogs.timeEntries[i],
-                    tags = timeEntryFormatter.getTags(entry.description);
-                if (tags.length === 0) {
-                    tags.push(entry.description);
-                }
-                for (var j = 0; j < tags.length; j++) {
-                    let tag = '#' + tags[j],
-                        ix = dailyLogs.summaryEntries.findIndex(e => e.title == tag);
-                    if (ix === -1) {
-                        dailyLogs.summaryEntries.push({
-                            title: tag,
-                            duration: entry.duration,
-                            durationString: durationFormatter.fromDuration(entry.duration)
-                        });
-                    }
-                    else {
-                        dailyLogs.summaryEntries[ix].duration += entry.duration;
-                        dailyLogs.summaryEntries[ix].durationString = durationFormatter.fromDuration(dailyLogs.summaryEntries[ix].duration);
-                    }
-                }
-            }
+            dailyLogs.summaryEntries = dailyLogsSummary.create(dailyLogs.timeEntries);
             dailyLogs.summaryEntries.sort(function (a, b) {
-                let titleA = a.title,
-                    titleB = b.title;
-                if (titleA < titleB)
-                    return -1;
-                if (titleA > titleB)
+                let valueA = a.duration,
+                    valueB = b.duration;
+                if (valueA < valueB)
                     return 1;
+                if (valueA > valueB)
+                    return -1;
                 return 0;
             });
         },

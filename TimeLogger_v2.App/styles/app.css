@@ -560,6 +560,17 @@ main {
     text-align: right;
 }
 
+.summary__details {
+    list-style: none;
+    margin: calc(var(--pt-sm)/2) 0 0 var(--pt-1);
+    padding: 0;
+}
+
+.summary__details--item {
+    font-size: var(--fs-footnote);
+    color: var(--clr-dark-grey-active);
+}
+
 /* media queries */
 @media(min-width: 700px) {
 

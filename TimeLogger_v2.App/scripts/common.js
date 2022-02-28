@@ -75,3 +75,51 @@ export const timeEntryFormatter = {
         return (description.match(/(\>|\#)\S+/g) || []).map(t => t.slice(1));
     }
 }
+
+export const dailyLogsSummary = {
+    create: function (entries) {
+        let summary = [],
+            unique = dailyLogsSummary.getUniqueEntries(entries);
+        for (var i = 0; i < unique.length; i++) {
+            let entry = unique[i],
+                tags = timeEntryFormatter.getTags(entry.description);
+            if (tags.length == 0) {
+                tags.push('General');
+            }
+            for (var j = 0; j < tags.length; j++) {
+                let tag = tags[j],
+                    ix = summary.findIndex(e => e.tag === tag);
+                if (ix === -1) {
+                    summary.push({
+                        'tag': tag,
+                        'duration': 0,
+                        'entries': []
+                    });
+                    ix = summary.length - 1;
+                }
+                summary[ix].duration += entry.duration;
+                summary[ix].entries.push(entry);
+            }
+        }
+        return summary;
+    },
+
+    getUniqueEntries: function (entries) {
+        let keys = [],
+            unique = [];
+        for (var i = 0; i < entries.length; i++) {
+            let ix = keys[entries[i].description];
+            if (ix) {
+                unique[ix-1].duration += entries[i].duration;
+            }
+            else {
+                unique.push({
+                    description: entries[i].description,
+                    duration: entries[i].duration
+                });
+                keys[entries[i].description] = unique.length;
+            }
+        }
+        return unique;
+    }
+}
