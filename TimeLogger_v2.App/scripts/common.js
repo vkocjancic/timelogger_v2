@@ -36,6 +36,15 @@ export const timeEntryFormatter = {
         var matchTime = inputText.match(/(\@\d{1,2}\:{0,1}\d{2})(\-{0,1}\d{1,2}\:{0,1}\d{2}){0,1}/),
             matchTags = timeEntryFormatter.getTags(inputText),
             matchDescription = (inputText.replace(/(\@\S+)/g, '') || '').trim();
+        if (!matchTime) {
+            let dateNow = new Date();
+            let timeNow = '@' + dateNow.getHours() + dateNow.getMinutes().toString().padStart(2, '0');
+            matchTime = [
+                timeNow,
+                timeNow,
+                undefined
+            ];
+        }
         return {
             begin: timeEntryFormatter.fromInputTypeToISODate(date, matchTime[1]),
             end: timeEntryFormatter.fromInputTypeToISODate(date, matchTime[2]),
