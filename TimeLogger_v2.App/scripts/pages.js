@@ -37,7 +37,7 @@ let templateHome =
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
     '                    <td class="table__col table__col--actions">' +
     '                        <a href="#" class="btn btn--sm btn--secondary" title="Cancel" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()"><i class="icon action__cancel"></i></a>' +
-    '                        <a href="#" class="btn btn--sm" title="Edit" v-else v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
+    '                        <a href="#" class="btn btn--sm" title="Edit" v-if="selectedEntryId !== timeEntry.id && !timeEntry.isUpdating" v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
     '                    </td>' +
     '                </tr>' +
     '            </tbody>' +
@@ -212,6 +212,7 @@ export const HomeComponent = {
                 extid = Date.now();
             // set external id, add entry directly to timeEntriesArray and recalculate duration
             entryTemporary.extId = extid;
+            entryTemporary.isUpdating = true;
             dailyLogs.timeEntries.push(entryTemporary);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearTimeEntry();
@@ -221,19 +222,22 @@ export const HomeComponent = {
                 var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
                     newEntry = dailyLogs.newEntryFromApiEntry(response.data);
                 dailyLogs.timeEntries[ixEntry].id = newEntry.id;
+                dailyLogs.timeEntries[ixEntry].isUpdating = false;
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
                     router.push('/');
                 }
                 else {
+                    var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid));
+                    dailyLogs.timeEntries[ixEntry].isUpdating = false;
                     dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
         },
 
         newEntryFromApiEntry: function (entry) {
-            let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: ''};
+            let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isUpdating: false};
             if (entry.begin) {
                 newEntry.begin = dateFormatter.fromApiDateTime(entry.begin);
             }
@@ -300,23 +304,28 @@ export const HomeComponent = {
 
         updateTimeEntry: function () {
             let dailyLogs = this,
+                selectedId = dailyLogs.selectedEntryId,
                 entryFromString = timeEntryFormatter.fromInputFieldToObject(dailyLogs.selectedDate, dailyLogs.input.entryText),
-                ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === dailyLogs.selectedEntryId);
+                ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === selectedId);
             entryFromString.id = dailyLogs.selectedEntryId;
             // copy new object back into the stack
             dailyLogs.timeEntries[ixEntry] = dailyLogs.newEntryFromApiEntry(entryFromString);
+            dailyLogs.timeEntries[ixEntry].isUpdating = true;
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
             dailyLogs.setAlert();
             // submit entry to server
             axios.post('api/timeentry/update', entryFromString).then(function (response) {
-                // we don't need to do anything
+                var ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
+                dailyLogs.timeEntries[ixEntry].isUpdating = false;
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
                     router.push('/');
                 }
                 else {
+                    var ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
+                    dailyLogs.timeEntries[ixEntry].isUpdating = false;
                     dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
