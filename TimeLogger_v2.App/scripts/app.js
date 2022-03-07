@@ -20,6 +20,7 @@ const routes = [
     { name: 'Home', path: '/home', component: HomeComponent, meta: { title: 'Daily logs' } },
     { name: 'Insights', path: '/insights', component: InsightsComponent, meta: { title: 'Insights' } },
     { name: 'Tasks', path: '/tasks', component: TasksComponent, meta: { title: 'Tasks' } },
+    { name: 'UpgradeAccount', path: '/upgrade-account', component: NotYetImplementedComponent, meta: { title: 'Upgrade your account' } },
     { name: 'NotYetImplemented', path: '/nyi', component: NotYetImplementedComponent, meta: { title: 'Not yet implemented' } },
     { path: '/', redirect: { name: 'Home' } }
 ];

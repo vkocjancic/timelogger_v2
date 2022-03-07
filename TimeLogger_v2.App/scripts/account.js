@@ -47,7 +47,11 @@ export const LoginComponent = {
                 password: login.input.password
             }).then(function (response) {
                 sessionStore.setter.isLoggedIn(true);
-                sessionStore.setter.username(login.input.username);
+                sessionStore.setter.accountDetails({
+                    username: login.input.username,
+                    type: 'MVP',
+                    expires: new Date('2022-12-31')
+                });
                 login.showAlert = false;
                 router.push(route.query.redirect || '/');
             }).catch(function (error) {
@@ -91,7 +95,7 @@ export const LogoutComponent = {
             var logout = this;
             if (sessionStore.getter.isLoggedIn()) {
                 axios.post('/api/account/logout');
-                sessionStore.setter.username(null);
+                sessionStore.setter.accountDetails(null);
                 sessionStore.setter.isLoggedIn(false);
             }
             logout.$router.push('/');

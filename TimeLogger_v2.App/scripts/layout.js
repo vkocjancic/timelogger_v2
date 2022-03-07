@@ -29,13 +29,15 @@ let templateLayoutDefault =
     '        </div>' +
     '        <input type="checkbox" id="nav__sub--toggle" class="nav__sub--toggle" />' +
     '        <label for="nav__sub--toggle" class="nav__sub--toggle-label">' +
-    '          <i></i>' +
+    '            <i></i>' +
     '        </label>' +
     '        <div class="nav__sub">' +
-    '          <h3>{{username}}</h3>' +
-    '          <ul>' +
-    '        	<li><router-link to="/logout">Sign out of TimeLogger</router-link></li>' +
-    '          </ul>' +
+    '            <h3>{{account.username}}</h3>' +
+    '            <p class="account__type"><span class="account__type--name">{{account.type}}</span> (expires {{getExpiresMessage}})</p>' +
+    '            <ul>' +
+    '        	     <li><router-link to="/upgrade-account">Upgrade account</router-link></li>' +
+    '        	     <li><router-link to="/logout">Sign out of TimeLogger</router-link></li>' +
+    '            </ul>' +
     '        </div>' +
     '    </header>' +
     '    <main>' +
@@ -47,7 +49,13 @@ export const LayoutDefaultComponent = {
     data() {
         return {
             projects: [],
-            username: sessionStore.getter.username()
+            account: sessionStore.getter.accountDetails()
+        }
+    },
+    computed: {
+        getExpiresMessage: function () {
+            var layout = this;
+            return layout.account.expires ? new Date(layout.account.expires).toDateString() : 'never';
         }
     },
     created() {
