@@ -135,6 +135,19 @@ namespace TimeLogger_v2.App.Controllers
                 await _accountService.InsertLoginAttempt(remoteIpAddress, model.Username, false);
                 return Unauthorized(new { nextLoginTimeout = nextLoginTimeout });
             }
+            var modelResponse = new AccountDetailsModel(model.Username);
+            Account account = await _accountService.GetAccountDetails(model.Username);
+            if (null != account)
+            {
+                if (!string.IsNullOrEmpty(account.AccountType))
+                {
+                    modelResponse.AccountType = account.AccountType;
+                }
+                if (account.ExpiresDate.HasValue)
+                {
+                    modelResponse.ExpiresIsoDate = account.ExpiresDate.Value.ToString("yyyy-MM-dd");
+                }
+            }
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, model.Username),
@@ -160,7 +173,7 @@ namespace TimeLogger_v2.App.Controllers
             }
             await _accountService.InsertLoginAttempt(remoteIpAddress, model.Username, true);
             _logger.LogInformation("{0}\tLogin successful for user '{1}'", remoteIpAddress, model.Username);
-            return NoContent();
+            return Ok(modelResponse);
         }
 
         [HttpPost]

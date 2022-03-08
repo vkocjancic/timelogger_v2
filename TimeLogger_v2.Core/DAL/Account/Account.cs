@@ -21,6 +21,8 @@ namespace TimeLogger_v2.Core.DAL.Account
         public string Email { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
+        public string AccountType { get; set; }
+        public DateTime? ExpiresDate { get; set; }
 
         #endregion
 

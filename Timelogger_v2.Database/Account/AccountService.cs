@@ -45,7 +45,7 @@ namespace TimeLogger_v2.Database.Account
                 {
                     var colAccounts = db.GetCollection<Core.DAL.Account.Account>(Core.DAL.Account.Account.Collection);
                     var account = colAccounts.Query()
-                        .Where(a => a.Email == username && a.IsActive)
+                        .Where(a => a.Email.ToLower() == username.ToLower() && a.IsActive)
                         .FirstOrDefault();
                     if (null != account)
                     {
@@ -71,7 +71,7 @@ namespace TimeLogger_v2.Database.Account
                     var colAudit = db.GetCollection<Audit>(Audit.Collection);
                     var lastAudit = colAudit.Query()
                         .Where(a => a.IpAddress == remoteIpAddress.ToString()
-                            && a.Username == username)
+                            && a.Username.ToLower() == username.ToLower())
                         .OrderByDescending(a => a.Timestamp)
                         .FirstOrDefault();
                     canLogin = (null == lastAudit) 
@@ -94,7 +94,7 @@ namespace TimeLogger_v2.Database.Account
                 {
                     var colAccount = db.GetCollection<Core.DAL.Account.Account>(Core.DAL.Account.Account.Collection);
                     var account = colAccount.Query()
-                        .Where(a => a.Email == username && a.IsActive)
+                        .Where(a => a.Email.ToLower() == username.ToLower() && a.IsActive)
                         .FirstOrDefault();
                     canRegister = (null == account);
                 }
@@ -113,7 +113,7 @@ namespace TimeLogger_v2.Database.Account
                 {
                     var colAccount = db.GetCollection<Core.DAL.Account.Account>(Core.DAL.Account.Account.Collection);
                     var account = colAccount.Query()
-                        .Where(a => a.Email == username && a.IsActive)
+                        .Where(a => a.Email.ToLower() == username.ToLower() && a.IsActive)
                         .FirstOrDefault();
                     canResetPassword = (null != account);
                 }
@@ -195,6 +195,25 @@ namespace TimeLogger_v2.Database.Account
             return pwdResetEntry;
         }
 
+        public async Task<Core.DAL.Account.Account> GetAccountDetails(string username)
+        {
+            Core.DAL.Account.Account account = null;
+            await Task.Run(() =>
+            {
+                var sw = Stopwatch.StartNew();
+                using (var db = new LiteDatabase(_databaseName))
+                {
+                    var colAccount= db.GetCollection<Core.DAL.Account.Account>(Core.DAL.Account.Account.Collection);
+                    account = colAccount.Query()
+                        .Where(a => a.Email.ToLower() == username.ToLower() && a.IsActive)
+                        .FirstOrDefault();
+                }
+                sw.Stop();
+                _logger.LogDebug("{0} ms\tCreatePasswordResetEntry", sw.ElapsedMilliseconds);
+            });
+            return account;
+        }
+
         public Task<int> GetNextLoginTimeout(IPAddress remoteIpAddress, string username)
         {
             var sw = Stopwatch.StartNew();
@@ -204,14 +223,14 @@ namespace TimeLogger_v2.Database.Account
                 var colAudit = db.GetCollection<Audit>(Audit.Collection);
                 var lastSuccessfulAudit = colAudit.Query()
                     .Where(a => a.IpAddress == remoteIpAddress.ToString()
-                            && a.Username == username
+                            && a.Username.ToLower() == username.ToLower()
                             && a.IsSuccessful)
                         .OrderByDescending(a => a.Timestamp)
                         .FirstOrDefault();
                 var dateCutoff = lastSuccessfulAudit?.Timestamp ?? DateTime.Now.AddMinutes(-10);
                 var noInvalidLoginAttempts = colAudit.Query()
                     .Where(a => a.IpAddress == remoteIpAddress.ToString() 
-                        && a.Username == username
+                        && a.Username.ToLower() == username.ToLower()
                         && a.Timestamp > dateCutoff)
                     .Count();
                 nextLoginTimeout = Math.Min(nextLoginTimeout * (noInvalidLoginAttempts + 1), _maxLoginTimeout);
@@ -261,7 +280,7 @@ namespace TimeLogger_v2.Database.Account
                     colPwdReset.Update(pwdResetEntry);
                     var colAccount = db.GetCollection<Core.DAL.Account.Account>(Core.DAL.Account.Account.Collection);
                     var account = colAccount.Query()
-                        .Where(a => a.Email == pwdResetEntry.Username && a.IsActive)
+                        .Where(a => a.Email.ToLower() == pwdResetEntry.Username.ToLower() && a.IsActive)
                         .FirstOrDefault();
                     if (null == account)
                     {

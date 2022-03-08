@@ -35,7 +35,7 @@ let templateLayoutDefault =
     '            <h3>{{account.username}}</h3>' +
     '            <p class="account__type"><span class="account__type--name">{{account.type}}</span> (expires {{getExpiresMessage}})</p>' +
     '            <ul>' +
-    '        	     <li><router-link to="/upgrade-account">Upgrade account</router-link></li>' +
+    '        	     <li v-if="getUpgradeAccountVisibility"><router-link to="/upgrade-account" :disabled=>Upgrade account</router-link></li>' +
     '        	     <li><router-link to="/logout">Sign out of TimeLogger</router-link></li>' +
     '            </ul>' +
     '        </div>' +
@@ -56,6 +56,10 @@ export const LayoutDefaultComponent = {
         getExpiresMessage: function () {
             var layout = this;
             return layout.account.expires ? new Date(layout.account.expires).toDateString() : 'never';
+        },
+        getUpgradeAccountVisibility: function () {
+            var layout = this;
+            return layout.account.accountType !== "MVP" || layout.account.expires
         }
     },
     created() {

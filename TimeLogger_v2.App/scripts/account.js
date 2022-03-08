@@ -1,4 +1,5 @@
 ﻿import { sessionStore } from './clientstore.js';
+import { dateFormatter } from './common.js';
 
 /* * * * * * * * * * * * * * * * * * * 
  *   LoginComponent                  *
@@ -46,14 +47,17 @@ export const LoginComponent = {
                 username: login.input.username,
                 password: login.input.password
             }).then(function (response) {
-                sessionStore.setter.isLoggedIn(true);
-                sessionStore.setter.accountDetails({
-                    username: login.input.username,
-                    type: 'MVP',
-                    expires: new Date('2022-12-31')
-                });
-                login.showAlert = false;
-                router.push(route.query.redirect || '/');
+                var details = response.data;
+                if (details) {
+                    sessionStore.setter.isLoggedIn(true);
+                    sessionStore.setter.accountDetails({
+                        username: details.username,
+                        type: details.accountType,
+                        expires: (details.expiresIsoDate) ? dateFormatter.fromIsoDate(details.expiresIsoDate) : null
+                    });
+                    login.showAlert = false;
+                    router.push(route.query.redirect || '/');
+                }
             }).catch(function (error) {
                 login.showAlert = true;
                 if (error.response.status === 401) {
