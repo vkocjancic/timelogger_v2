@@ -119,7 +119,9 @@ export const HomeComponent = {
         },
 
         clearTimeEntry: function (event) {
-            this.input.entryText = '';
+            let dailyLogs = this;
+            dailyLogs.input.entryText = '';
+            dailyLogs.focusTimeLogInput();
         },
 
         deleteTimeEntry: function (event) {
