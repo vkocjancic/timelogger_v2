@@ -25,7 +25,7 @@ namespace Timelogger_v2.Database
         {
             using (var md5 = MD5.Create())
             {
-                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(username));
+                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(username.ToLower()));
                 return BitConverter.ToString(result).Replace("-", "");
             }
         }
