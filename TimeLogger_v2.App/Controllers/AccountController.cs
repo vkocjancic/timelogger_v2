@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TimeLogger_v2.App.Adapter;
 using TimeLogger_v2.App.Model;
 using TimeLogger_v2.Core.DAL.Account;
 using TimeLogger_v2.Core.Notifications;
@@ -222,6 +224,19 @@ namespace TimeLogger_v2.App.Controllers
                 return BadRequest("Could not reset your password. Please, try again later.");
             }
             return Created("/passwordreset", model.Username);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSubscriptionList()
+        {
+            var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
+            _logger.LogDebug("{0}\tObtaining subscription list fo user '{1}'", remoteIpAddress, Request.HttpContext.User.Identity.Name);
+            IEnumerable<Plan> plansFromDb = await _accountService.GetSubscriptionList(Request.HttpContext.User.Identity.Name);
+            var plans = new List<PlanModel>(plansFromDb.Count());
+            var adapter = new PlanAdapter();
+            plans.AddRange(adapter.FromDomainBulk(plansFromDb));
+            _logger.LogInformation("{0}\tList subscriptions for user '{1}' and found {2} subscription(s)", remoteIpAddress, Request.HttpContext.User.Identity.Name, plans.Count);
+            return Ok(plans);
         }
 
         #endregion

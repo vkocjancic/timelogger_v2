@@ -119,10 +119,7 @@ namespace TimeLogger_v2.App.Controllers
             var entriesFromDb = await _timeEntryService.GetAllUserEntriesForDate(Request.HttpContext.User.Identity.Name, dateSelected);
             var entries = new List<TimeEntryModel>(entriesFromDb.Count());
             var adapter = new TimeEntryAdapter();
-            foreach (var entry in entriesFromDb)
-            {
-                entries.Add(adapter.FromDomain(entry));
-            }
+            entries.AddRange(adapter.FromDomainBulk(entriesFromDb));
             _logger.LogInformation("{0}\tList time entries for user '{1}' and date '{2}' found {3} time entries(s)", remoteIpAddress, Request.HttpContext.User.Identity.Name, selectedDate, entries.Count);
             return Ok(entries);
         }

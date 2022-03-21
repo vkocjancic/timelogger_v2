@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -209,7 +210,7 @@ namespace TimeLogger_v2.Database.Account
                         .FirstOrDefault();
                 }
                 sw.Stop();
-                _logger.LogDebug("{0} ms\tCreatePasswordResetEntry", sw.ElapsedMilliseconds);
+                _logger.LogDebug("{0} ms\tGetAccountDetails", sw.ElapsedMilliseconds);
             });
             return account;
         }
@@ -325,6 +326,49 @@ namespace TimeLogger_v2.Database.Account
                     numBytesRequested: 512 / 8
                 )
             );
+        }
+
+        #endregion
+
+        #region Subscriptions
+
+        public async Task<IEnumerable<Plan>> GetSubscriptionList(string username)
+        {
+            var plans = new List<Plan>()
+            {
+                new Plan() { 
+                    Code = "free", 
+                    ExpireYears = 0, 
+                    Info = new string[] { "up to 3 projects", "1000 daily logs archive", "export your data in JSON format", "enabled by default", "suitable for beginners" }, 
+                    Mode = -1, 
+                    Price = 0.00M, 
+                    Title = "Free" 
+                },
+                new Plan() { 
+                    Code = "pro", 
+                    ExpireYears = 1, 
+                    Info = new string[] { "up to 7 projects", "2000 daily logs archive", "export your data in JSON format", "opt-in policy", "reverts to free account on expiration" }, 
+                    Mode = 0, 
+                    Price = 7.00M, 
+                    Title = "Pro" 
+                },
+                new Plan() { 
+                    Code = "mvp", 
+                    ExpireYears = 0, 
+                    Info = new string[] { "unlimited number of project", "unlimited daily logs archive", "export your data in JSON format", "opt-in policy", "reverts to free account on expiration" }, 
+                    Mode = 0, 
+                    Price = 10.00M, 
+                    Title = "Mvp" 
+                },
+
+            };
+            Core.DAL.Account.Account account = await GetAccountDetails(username);
+            var plan = plans.FirstOrDefault(p => p.Code == account.AccountType?.ToLower());
+            if (null != plan)
+            {
+                plan.Mode = 1;
+            }
+            return plans;
         }
 
         #endregion

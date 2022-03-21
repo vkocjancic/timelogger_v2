@@ -13,7 +13,7 @@ const ViewMode = {
  * * * * * * * * * * * * * * * * * * */
 let templateHome =
     '<layout-default>' +
-    '    <header class="main__title">' + 
+    '    <header class="main__title">' +
     '        <h1 class="main__title--title">Daily logs</h1>' +
     '        <p class="main__title--sub">Logged today: <em class="main__title--info">{{totalDuration}}</em></p>' +
     '    </header>' +
@@ -21,14 +21,14 @@ let templateHome =
     '    <date-navigator v-on:date-change="handleDateChange"></date-navigator>' +
     '    <section class="main__content">' +
     '        <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
-    '        <table class="table" v-if="viewMode == 0">'+
-    '            <thead>'+
-    '                <tr>'+
-    '                    <th class="table__col table__col--time">Begin</th>'+
-    '                    <th class="table__col table__col--time">End</th>'+
-    '                    <th class="table__col">Description</th>'+
-    '                    <th class="table__col table__col--actions">Actions</th>'+
-    '                </tr>'+
+    '        <table class="table" v-if="viewMode == 0">' +
+    '            <thead>' +
+    '                <tr>' +
+    '                    <th class="table__col table__col--time">Begin</th>' +
+    '                    <th class="table__col table__col--time">End</th>' +
+    '                    <th class="table__col">Description</th>' +
+    '                    <th class="table__col table__col--actions">Actions</th>' +
+    '                </tr>' +
     '            </thead>' +
     '            <tbody v-if="timeEntries.length > 0">' +
     '                <tr v-for="timeEntry in timeEntries" v-bind:class="{ \'table__row--edit\': selectedEntryId === timeEntry.id }" >' +
@@ -44,23 +44,23 @@ let templateHome =
     '            <tbody v-else>' +
     '                <tr class="table__row--empty"><td colspan="4" class="table__col">It is rather lonely in here :( ...</td></tr>' +
     '            </tbody>' +
-    '            <tfoot>'+
-    '                <tr>'+
-    '                    <td colspan="4">'+
-    '                        <form class="timelog__form" name="edit" novalidate="novalidate" v-on:submit.prevent="submitTimeEntry">'+
-    '                            <fieldset>'+
+    '            <tfoot>' +
+    '                <tr>' +
+    '                    <td colspan="4">' +
+    '                        <form class="timelog__form" name="edit" novalidate="novalidate" v-on:submit.prevent="submitTimeEntry">' +
+    '                            <fieldset>' +
     '                                <input id="inTimeLog" ref="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for #Task #Project" autocomplete="off"' +
     '                                   v-model="input.entryText" /> ' +
-    '                            </fieldset>'+
-    '                            <div class="timelog__form--actions">'+
-    '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>'+
-    '                                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>'+
-    '                                <button class="btn btn--sm btn--alert" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>'+
-    '                            </div>'+
-    '                        </form>'+
-    '                    </td>'+
-    '                </tr>'+
-    '            </tfoot>'+
+    '                            </fieldset>' +
+    '                            <div class="timelog__form--actions">' +
+    '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>' +
+    '                                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>' +
+    '                                <button class="btn btn--sm btn--alert" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>' +
+    '                            </div>' +
+    '                        </form>' +
+    '                    </td>' +
+    '                </tr>' +
+    '            </tfoot>' +
     '        </table>' +
     '        <table class="table" v-else>' +
     '            <thead>' +
@@ -153,7 +153,7 @@ export const HomeComponent = {
             dailyLogs.timeEntries = [];
             dailyLogs.setAlert();
             dailyLogs.focusTimeLogInput();
-            axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate }}).then(function (response) {
+            axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate } }).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
                 entries.forEach((entry) => {
@@ -239,7 +239,7 @@ export const HomeComponent = {
         },
 
         newEntryFromApiEntry: function (entry) {
-            let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isUpdating: false};
+            let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isUpdating: false };
             if (entry.begin) {
                 newEntry.begin = dateFormatter.fromApiDateTime(entry.begin);
             }
@@ -376,6 +376,83 @@ export const TasksComponent = {
         'layout-default': LayoutDefaultComponent
     },
     template: templateTasks
+};
+
+
+/* * * * * * * * * * * * * * * * * * *
+ *   UpgradeAccountComponent         *
+ * * * * * * * * * * * * * * * * * * */
+let templateUpgradeAccount =
+    '<layout-default>' +
+    '    <header class="main__title">' +
+    '        <h1 class="main__title--title">Upgrade account</h1>' +
+    '        <p class="main__title--sub">Current plan: <em class="main__title--info">{{account.type}} (expires {{getExpiresMessage}})</em></p>' +
+    '    </header>' +
+    '    <section class="main__content">' +
+    '        <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '        <div class="plan--container">' +
+    '             <div v-for="package in packages" v-bind:class="[\'plan\', \'plan--\' + package.code ]">' +
+    '    	          <h2 class="plan--title">{{ package.title }}</h2>' +
+    '    	          <p class="plan--sub">{{ getPlanExpires(package.expires) }}</p>' +
+    '    	          <ul class="plan--info">' +
+    '    	              <li v-for="item in package.info">{{ item }}</li>' +
+    '    	          </ul>' +
+    '    	          <h3 class="plan--price">{{package.currency}} {{package.price}}</h3>' +
+    '                 <a v-if="package.mode == 0" v-bind:href="\'https://paypal.me/vkocjancic/\' + package.price" class="btn btn--block btn--secondary" target="_blank">Upgrade account</a>' +
+    '                 <a v-if="package.mode == 1" v-bind:href="\'https://paypal.me/vkocjancic/\' + package.price" class="btn btn--block btn--secondary" target="_blank">Extend</a>' +
+    '    	      </div>' +
+    '             <ol class="plan--footnotes">' +
+    '                 <li>All changes made to your accounts apply after current subscription expires.</li>' +
+    '                 <li>Your subscription will default to Free account if no extension is made. No data will be lost, but will be made invisible, if out of bounds of current plan.</li>' +
+    '             </ol>' +
+    '        </div>' +
+    '    </section>' +
+    '</layout-default>';
+
+export const UpgradeAccountComponent = {
+    data() {
+        return {
+            account: sessionStore.getter.accountDetails(),
+            packages: []
+        }
+    },
+    computed: {
+        getExpiresMessage: function () {
+            var layout = this;
+            return layout.account.expires ? new Date(layout.account.expires).toDateString() : 'never';
+        }
+    },
+    created() {
+        this.fetchData();
+    },
+    methods: {
+
+        fetchData: function () {
+            let upgrade = this,
+                router = this.$router;
+            upgrade.packages = [];
+            axios.get('/api/account/getSubscriptionList').then(function (response) {
+                upgrade.packages = response.data;
+            }).catch(function (error) {
+                if (error.response.status === 401 || error.response.status === 403) {
+                    sessionStore.setter.isLoggedIn(false);
+                    router.push('/');
+                }
+                else {
+                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
+                }
+            });
+        },
+
+        getPlanExpires: function (expires) {
+            return (expires == 0) ? 'Perpetual' : 'Expires in ' + expires + ' year';
+        }
+
+    },
+    components: {
+        'layout-default': LayoutDefaultComponent
+    },
+    template: templateUpgradeAccount
 };
 
 

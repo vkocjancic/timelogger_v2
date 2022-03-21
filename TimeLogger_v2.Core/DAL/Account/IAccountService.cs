@@ -20,6 +20,7 @@ namespace TimeLogger_v2.Core.DAL.Account
         Task<int> GetNextLoginTimeout(IPAddress remoteIpAddress, string username);
         Task InsertLoginAttempt(IPAddress remoteIpAddress, string username, bool isSuccessful);
         Task<PasswordReset> ResetPassword(Guid passwordResetId, string password);
+        Task<IEnumerable<Plan>> GetSubscriptionList(string username);
     }
 
 }

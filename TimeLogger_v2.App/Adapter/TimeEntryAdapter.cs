@@ -10,7 +10,7 @@ using TimeLogger_v2.Core.DAL.TimeLog;
 
 namespace TimeLogger_v2.App.Adapter
 {
-    public class TimeEntryAdapter : IAdapter<TimeEntryModel, TimeEntry>
+    public class TimeEntryAdapter : AdapterBase<TimeEntryModel, TimeEntry>
     {
 
         #region Declarations
@@ -20,7 +20,7 @@ namespace TimeLogger_v2.App.Adapter
 
         #region IAdapeter implementation
 
-        public TimeEntryModel FromDomain(TimeEntry domain)
+        public override TimeEntryModel FromDomain(TimeEntry domain)
         {
             return new TimeEntryModel()
             {
@@ -31,7 +31,7 @@ namespace TimeLogger_v2.App.Adapter
             };
         }
 
-        public TimeEntry ToDomain(TimeEntryModel model)
+        public override TimeEntry ToDomain(TimeEntryModel model)
         {
             var domain = new TimeEntry()
             {
