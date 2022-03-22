@@ -152,7 +152,6 @@ export const HomeComponent = {
                 router = this.$router;
             dailyLogs.timeEntries = [];
             dailyLogs.setAlert();
-            dailyLogs.focusTimeLogInput();
             axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate } }).then(function (response) {
                 var entries = response.data;
                 var totalDuration = 0;
