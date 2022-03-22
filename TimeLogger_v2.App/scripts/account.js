@@ -196,7 +196,6 @@ export const CreateAccountComponent = {
                 password: signup.input.password,
                 passwordCheck: signup.input.passwordCheck
             }).then(function (response) {
-                sessionStore.setter.isLoggedIn(true);
                 signup.showAlert = false;
                 router.push(route.query.redirect || '/');
             }).catch(function (error) {
