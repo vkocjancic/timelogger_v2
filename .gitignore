@@ -348,6 +348,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/TimeLogger_v2.App/db/users/64233179059DF37D653061E2BCEE9FF8.db
+/TimeLogger_v2.App/db/*.db
 /Deploy
 /TimeLogger_v2.App/key-81c5e7ac-e6d5-4259-b545-31eb40314e8e.xml
+/TimeLogger_v2.App/appsettings.*
