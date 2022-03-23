@@ -139,11 +139,13 @@ namespace TimeLogger_v2.App.Controllers
             }
             var modelResponse = new AccountDetailsModel(model.Username);
             Account account = await _accountService.GetAccountDetails(model.Username);
+            var accountTypeRole = "AT_FREE";
             if (null != account)
             {
                 if (!string.IsNullOrEmpty(account.AccountType))
                 {
                     modelResponse.AccountType = account.AccountType;
+                    accountTypeRole = $"AT_{account.AccountType.ToUpper()}";
                 }
                 if (account.ExpiresDate.HasValue)
                 {
@@ -155,6 +157,7 @@ namespace TimeLogger_v2.App.Controllers
                 new Claim(ClaimTypes.Name, model.Username),
                 new Claim(ClaimTypes.Email, model.Username),
                 new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.Role, accountTypeRole),
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties()
