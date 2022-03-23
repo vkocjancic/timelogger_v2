@@ -322,6 +322,10 @@ h1, h2, h3 {
     content: "\f00d";
 }
 
+.action__copy::before {
+    content: "\f0c5";
+}
+
 .action__edit::before {
     content: "\f304";
 }

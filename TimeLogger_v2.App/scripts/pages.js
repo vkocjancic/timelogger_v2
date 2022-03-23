@@ -36,6 +36,7 @@ let templateHome =
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
     '                    <td class="table__col table__col--actions">' +
+    '                        <a href="#" class="btn btn--sm" title="Copy" v-if="!timeEntry.isUpdating" v-on:click.prevent="makeCopyForEntry(timeEntry.id)"><i class="icon action__copy"></i></a>' +
     '                        <a href="#" class="btn btn--sm btn--secondary" title="Cancel" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()"><i class="icon action__cancel"></i></a>' +
     '                        <a href="#" class="btn btn--sm" title="Edit" v-if="selectedEntryId !== timeEntry.id && !timeEntry.isUpdating" v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
     '                    </td>' +
@@ -237,6 +238,20 @@ export const HomeComponent = {
             });
         },
 
+        makeCopyForEntry: function (entryId) {
+            let dailyLogs = this,
+                ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
+                entry;
+            dailyLogs.setAlert();
+            if (ixEntry == -1) {
+                return;
+            }
+            entry = dailyLogs.timeEntries[ixEntry];
+            dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(entry);
+            dailyLogs.focusTimeLogInput();
+            return entry;
+        },
+
         newEntryFromApiEntry: function (entry) {
             let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isUpdating: false };
             if (entry.begin) {
@@ -280,17 +295,20 @@ export const HomeComponent = {
         },
 
         setEntryToEdit: function (entryId) {
+            //let dailyLogs = this,
+            //    ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
+            //    entry;
+            //dailyLogs.setAlert();
+            //if (ixEntry == -1) {
+            //    return;
+            //}
+            //entry = dailyLogs.timeEntries[ixEntry];
+            //dailyLogs.selectedEntryId = entry.id;
+            //dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(entry);
+            //dailyLogs.focusTimeLogInput();
             let dailyLogs = this,
-                ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
-                entry;
-            dailyLogs.setAlert();
-            if (ixEntry == -1) {
-                return;
-            }
-            entry = dailyLogs.timeEntries[ixEntry];
+                entry = dailyLogs.makeCopyForEntry(entryId);
             dailyLogs.selectedEntryId = entry.id;
-            dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(entry);
-            dailyLogs.focusTimeLogInput();
         },
 
         submitTimeEntry: function (event) {
