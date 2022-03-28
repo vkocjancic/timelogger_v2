@@ -16,7 +16,6 @@ let templateLayoutDefault =
     '                <ul>' +
     '                    <li><router-link to="/" class="icon page__daily-logs">Daily logs</router-link></li>' +
     '                    <li><router-link to="/insights" class="icon page__insights">Insights</router-link></li>' +
-    '                    <li><router-link to="/tasks" class="icon page__tasks">Tasks</router-link></li>' +
     '                </ul>' +
     '            </nav>' +
     '            <nav class="nav__main--projects">' +

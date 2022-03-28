@@ -1,6 +1,6 @@
 ﻿import { sessionStore } from './clientstore.js';
 import { CreateAccountComponent, ForgotPasswordComponent, LoginComponent, LogoutComponent, PasswordResetComponent } from './account.js';
-import { HomeComponent, InsightsComponent, TasksComponent, UpgradeAccountComponent, NotYetImplementedComponent } from './pages.js';
+import { HomeComponent, InsightsComponent, UpgradeAccountComponent, NotYetImplementedComponent } from './pages.js';
 
 const PrivacyPolicyComponent = { template: '<p>Privacy policy</p>' };
 const TermsOfServiceComponent = { template: '<p>Terms of service</p>' };
@@ -19,7 +19,6 @@ const routes = [
     // restricted access routes
     { name: 'Home', path: '/home', component: HomeComponent, meta: { title: 'Daily logs' } },
     { name: 'Insights', path: '/insights', component: InsightsComponent, meta: { title: 'Insights' } },
-    { name: 'Tasks', path: '/tasks', component: TasksComponent, meta: { title: 'Tasks' } },
     { name: 'UpgradeAccount', path: '/upgrade-account', component: UpgradeAccountComponent, meta: { title: 'Upgrade your account' } },
     { name: 'NotYetImplemented', path: '/nyi', component: NotYetImplementedComponent, meta: { title: 'Not yet implemented' } },
     { path: '/', redirect: { name: 'Home' } }

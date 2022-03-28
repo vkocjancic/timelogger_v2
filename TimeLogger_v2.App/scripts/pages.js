@@ -377,24 +377,6 @@ export const InsightsComponent = {
 
 
 /* * * * * * * * * * * * * * * * * * *
- *   TasksComponent               *
- * * * * * * * * * * * * * * * * * * */
-let templateTasks =
-    '<layout-default>' +
-    '    <header class="main__title">' +
-    '        <h1 class="main__title--title">Task list</h1>' +
-    '    </header>' +
-    '</layout-default>';
-
-export const TasksComponent = {
-    components: {
-        'layout-default': LayoutDefaultComponent
-    },
-    template: templateTasks
-};
-
-
-/* * * * * * * * * * * * * * * * * * *
  *   UpgradeAccountComponent         *
  * * * * * * * * * * * * * * * * * * */
 let templateUpgradeAccount =
