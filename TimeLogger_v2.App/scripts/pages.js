@@ -233,7 +233,16 @@ export const HomeComponent = {
                 else {
                     var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid));
                     dailyLogs.timeEntries[ixEntry].isUpdating = false;
-                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
+                    if (error.response.data
+                        && error.response.data === "ERR_TIME_ENTRY_END_BEFORE_BEGIN") {
+                        dailyLogs.setAlert('Entry cannot end before it begins. Please, check your time format');
+                        dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(dailyLogs.timeEntries[ixEntry]);
+                        dailyLogs.timeEntries.splice(ixEntry, 1);
+                        dailyLogs.focusTimeLogInput();
+                    }
+                    else {
+                        dailyLogs.setAlert('Oops. Something went wrong. Please, try again later.');
+                    }
                 }
             });
         },
@@ -295,17 +304,6 @@ export const HomeComponent = {
         },
 
         setEntryToEdit: function (entryId) {
-            //let dailyLogs = this,
-            //    ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
-            //    entry;
-            //dailyLogs.setAlert();
-            //if (ixEntry == -1) {
-            //    return;
-            //}
-            //entry = dailyLogs.timeEntries[ixEntry];
-            //dailyLogs.selectedEntryId = entry.id;
-            //dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(entry);
-            //dailyLogs.focusTimeLogInput();
             let dailyLogs = this,
                 entry = dailyLogs.makeCopyForEntry(entryId);
             dailyLogs.selectedEntryId = entry.id;

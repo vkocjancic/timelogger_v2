@@ -44,7 +44,11 @@ namespace TimeLogger_v2.App.Controllers
             try
             {
                 var adapter = new TimeEntryAdapter();
-                var entry = adapter.ToDomain(model);
+                TimeEntry entry = adapter.ToDomain(model);
+                if (!entry.IsValid(out string error))
+                {
+                    throw new ArgumentException(error);
+                }
                 model.Id = await _timeEntryService.CreateEntry(Request.HttpContext.User.Identity.Name, entry);
                 _logger.LogInformation("{0}\tCreated time entry for user '{1}' with id '{2}'", remoteIpAddress, Request.HttpContext.User.Identity.Name, model.Id);
                 return Created("", model);

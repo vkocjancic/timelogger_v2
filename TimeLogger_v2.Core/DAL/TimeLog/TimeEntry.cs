@@ -26,6 +26,21 @@ namespace TimeLogger_v2.Core.DAL.TimeLog
 
         #endregion
 
+        #region Public methods
+
+        public bool IsValid(out string error)
+        {
+            error = "";
+            if (Begin.HasValue && End.HasValue && Begin.Value > End.Value)
+            {
+                error = "ERR_TIME_ENTRY_END_BEFORE_BEGIN";
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
     }
 
 }
