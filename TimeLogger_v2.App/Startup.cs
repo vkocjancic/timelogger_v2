@@ -22,6 +22,8 @@ using TimeLogger_v2.Core.DAL.TimeLog;
 using TimeLogger_v2.Database.TimeEntry;
 using Microsoft.AspNetCore.DataProtection;
 using System.IO;
+using TimeLogger_v2.Core.DAL.Insights;
+using TimeLogger_v2.Database.Insights;
 
 namespace TimeLogger_v2.App
 {
@@ -80,6 +82,7 @@ namespace TimeLogger_v2.App
             services.AddTransient<TemplateHelperBase, FileTemplateHelper>(x => 
                 new FileTemplateHelper(System.IO.Path.Combine(WebHostEnvironment.WebRootPath, Configuration.GetValue("TemplatesPath", "templates"))));
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IInsightsService, InsightsService>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<ITimeEntryService, TimeEntryService>();

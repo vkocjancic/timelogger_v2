@@ -34,7 +34,7 @@ let templateLayoutDefault =
     '            <h3>{{account.username}}</h3>' +
     '            <p class="account__type"><span class="account__type--name">{{account.type}}</span> (expires {{getExpiresMessage}})</p>' +
     '            <ul>' +
-    '        	     <li v-if="getUpgradeAccountVisibility"><router-link to="/upgrade-account" :disabled=>Upgrade account</router-link></li>' +
+    '        	     <li v-if="getUpgradeAccountVisibility"><router-link to="/upgrade-account">Upgrade account</router-link></li>' +
     '        	     <li><router-link to="/logout">Sign out of TimeLogger</router-link></li>' +
     '            </ul>' +
     '        </div>' +

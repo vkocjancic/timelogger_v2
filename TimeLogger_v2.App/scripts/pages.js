@@ -1,6 +1,6 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
 import { sessionStore } from './clientstore.js';
-import { DateNavigatorComponent, DropDownSelectorComponent } from './shared.js';
+import { DateNavigatorComponent, DropDownSelectorComponent, RangeNavigatorComponent } from './shared.js';
 import { dailyLogsSummary, dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
 const ViewMode = {
@@ -366,11 +366,141 @@ let templateInsights =
     '    <header class="main__title">' +
     '        <h1 class="main__title--title">Insights</h1>' +
     '    </header>' +
+    '    <range-navigator v-on:range-change="handleRangeChange"></range-navigator>' +
+    '    <section class="main__content">' +
+    '      <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '      <div class="insights__graph">' +
+    '    	 <canvas id="insightsGraph" ref="insightsGraph" class="insights__graph--canvas"></canvas>' +
+    '      </div>' +
+    '      <table class="table">' +
+    '    	 <thead>' +
+    '    	   <th class="table__col">Tag</th>' +
+    '    	   <th class="table__col table__col--duration">Duration</th>' +
+    '    	 </thead>' +
+    '    	 <tbody>' +
+    '    	   <tr v-for="item in reportData">' +
+    '    	 	<td class="table__col">#{{item.tag}}</td>' +
+    '    	 	<td class="table__col table__col--duration">{{this.formatDuration(item.duration)}}</td>' +
+    '    	   </tr>' +
+    '    	 </tbody>' +
+    '      </table>' +
+    '    </section>' +
     '</layout-default>';
 
 export const InsightsComponent = {
+    data() {
+        return {
+            alertMessage: '',
+            chart: null,
+            chartData: {
+                datasets: [
+                    { label: '', data: [] },
+                    { label: '', data: [] },
+                    { label: '', data: [] }
+                ],
+                labels: ['']
+            },
+            selectedStartDate: dateFormatter.toIsoDate(new Date().addDays(-7)),
+            selectedEndDate: dateFormatter.toIsoDate(new Date()),
+            showAlert: false,
+            reportData: []
+        }
+    },
+    created() {
+        let insights = this;
+        insights.fetchData();
+    },
+    methods: {
+        fetchData: function () {
+            let insights = this,
+                router = this.$router;
+            insights.chartData = null;
+            insights.reportData = [];
+            axios.get('/api/insights/list', {
+                params: { 'startDate': insights.selectedStartDate, 'endDate': insights.selectedEndDate }
+            }).then(function (response) {
+                insights.chartData = response.data.chartData;
+                insights.reportData = response.data.reportData;
+                insights.drawChart();
+            }).catch(function (error) {
+                if (error.response.status === 401 || error.response.status === 403) {
+                    sessionStore.setter.isLoggedIn(false);
+                    router.push('/');
+                }
+                else {
+                    insights.setAlert('Oops. Something went wrong. Please, try again later');
+                }
+            });
+        },
+
+        formatDuration: function (value) {
+            return durationFormatter.fromDuration(value);
+        },
+
+        handleRangeChange: function (newStartDate, newEndDate) {
+            let insights = this;
+            insights.selectedStartDate = newStartDate;
+            insights.selectedEndDate = newEndDate;
+            insights.fetchData();
+        },
+
+        drawChart: function () {
+            let insights = this,
+                chartCanvas = insights.$refs.insightsGraph.getContext('2d'),
+                data = insights.chartData;
+            if (insights.chart) {
+                insights.chart.destroy();
+            }
+            insights.chart = new Chart(chartCanvas, {
+                type: "bar",
+                data: {
+                    datasets: [
+                        {
+                            label: data.datasets[0].label,
+                            data: data.datasets[0].data,
+                            backgroundColor: "rgba(126, 185, 20, 0.3)",
+                            borderColor: "rgba(126, 185, 20, 0.7)",
+                            borderWidth: 2
+                        },
+                        {
+                            type: "line",
+                            label: data.datasets[1].label,
+                            data: data.datasets[1].data,
+                            backgroundColor: "rgba(199, 31, 22, .3)",
+                            borderColor: "rgba(199, 31, 22, 1)"
+                        },
+                        {
+                            type: "line",
+                            label: data.datasets[2].label,
+                            data: data.datasets[2].data,
+                            backgroundColor: "rgba(8, 21, 40, .3)",
+                            borderColor: "rgba(8, 21, 40, 1)"
+                        }
+                    ],
+                    labels: data.labels
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxis: {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            });
+        },
+
+        setAlert: function (message) {
+            let dailyLogs = this;
+            dailyLogs.showAlert = (message) ? true : false;
+            dailyLogs.alertMessage = message;
+        },
+    },
     components: {
-        'layout-default': LayoutDefaultComponent
+        'layout-default': LayoutDefaultComponent,
+        'range-navigator': RangeNavigatorComponent,
     },
     template: templateInsights
 };
@@ -436,14 +566,20 @@ export const UpgradeAccountComponent = {
                     router.push('/');
                 }
                 else {
-                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
+                    upgrade.setAlert('Oops. Something went wrong. Please, try again later');
                 }
             });
         },
 
         getPlanExpires: function (expires) {
             return (expires == 0) ? 'Perpetual' : 'Expires in ' + expires + ' year';
-        }
+        },
+
+        setAlert: function (message) {
+            let dailyLogs = this;
+            dailyLogs.showAlert = (message) ? true : false;
+            dailyLogs.alertMessage = message;
+        },
 
     },
     components: {

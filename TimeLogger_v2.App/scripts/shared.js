@@ -56,3 +56,32 @@ export const DropDownSelectorComponent = {
     template: templateDropDownSelector
 };
 /* END DropDownSelectorComponent     */
+
+
+/* * * * * * * * * * * * * * * * * * *
+ *   RangeNavigatorComponent         *
+ * * * * * * * * * * * * * * * * * * */
+let templateRangeNavigator =
+    '<nav class="range__nav">' +
+    '  <div class="range__nav--item">' +
+    '	 <label for="tbDateFrom">From</label>' +
+    '	 <input type="date" name="tbDateFrom" class="date__nav--picker" v-model="selectedDateFrom" v-on:change="$emit(\'range-change\', selectedDateFrom, selectedDateTo)" />' +
+    '  </div>' +
+    '  <div class="range__nav--item">' +
+    '	 <label for="tbDateFrom">To</label>' +
+    '	 <input type="date" name="tbDateTo" class="date__nav--picker" v-model="selectedDateTo" v-on:change="$emit(\'range-change\', selectedDateFrom, selectedDateTo)" />' +
+    '  </div>' +
+    '</nav>';
+
+export const RangeNavigatorComponent = {
+    data() {
+        return {
+            selectedDateFrom: dateFormatter.toIsoDate(new Date().addDays(-7)),
+            selectedDateTo: dateFormatter.toIsoDate(new Date())
+        }
+    },
+
+    props: ['type'],
+    template: templateRangeNavigator
+};
+/* END RangeNavigatorComponent       */

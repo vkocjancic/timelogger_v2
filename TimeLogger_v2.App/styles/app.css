@@ -568,6 +568,13 @@ main {
         border-bottom: solid 2px var(--clr-dark);
     }
 
+.range__nav {
+    display: grid;
+    gap: var(--pt-sm);
+    place-content: center;
+    text-align: right;
+}
+
 .timelog__form fieldset {
     border: 0;
     padding: var(--pt-1) 0 var(--pt-sm);
@@ -639,6 +646,12 @@ main {
         margin-bottom: var(--pt-sm);
     }
 
+.insights__graph {
+    margin: var(--pt-1) auto;
+    max-width: 900px;
+    max-height: 450px;
+}
+
 /* media queries */
 @media(min-width: 700px) {
 
@@ -689,6 +702,21 @@ main {
 }
 
 @media (min-width: 1000px) {
+
+    /* other styles */
+    .range__nav {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--pt-1);
+    }
+
+    .range__nav--item:nth-child(1) {
+        text-align: right;
+    }
+
+    .range__nav--item:nth-child(2) {
+        text-align: left;
+    }
+
     .plan--container {
         gap: var(--pt-1);
         grid-template-columns: minmax(auto, 350px) minmax(auto, 350px) minmax( auto, 350px );

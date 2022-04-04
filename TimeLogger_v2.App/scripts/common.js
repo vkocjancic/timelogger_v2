@@ -1,4 +1,5 @@
-﻿export const dateFormatter = {
+﻿
+export const dateFormatter = {
     fromApiDateTime: function (dateToConvert) {
         var dateTime = new Date(dateToConvert);
         return dateTime.getHours().toString().padStart(2, '0') + ':' + dateTime.getMinutes().toString().padStart(2, '0');
@@ -132,3 +133,12 @@ export const dailyLogsSummary = {
         return unique;
     }
 }
+
+/* PROTOTYPE EXTENSIONS */
+Date.prototype.addDays = function (days) {
+    var dat = new Date(this.valueOf());
+    dat.setDate(dat.getDate() + days);
+    return dat;
+}
+
+export default { addDays: Date.prototype.addDays }
