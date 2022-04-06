@@ -377,12 +377,15 @@ let templateInsights =
     '    	   <th class="table__col">Tag</th>' +
     '    	   <th class="table__col table__col--duration">Duration</th>' +
     '    	 </thead>' +
-    '    	 <tbody>' +
+    '    	 <tbody v-if="reportData.length > 0">' +
     '    	   <tr v-for="item in reportData">' +
     '    	 	<td class="table__col">#{{item.tag}}</td>' +
     '    	 	<td class="table__col table__col--duration">{{this.formatDuration(item.duration)}}</td>' +
     '    	   </tr>' +
     '    	 </tbody>' +
+    '        <tbody v-else>' +
+    '            <tr class="table__row--empty"><td colspan="2" class="table__col">It is rather lonely in here :( ...</td></tr>' +
+    '        </tbody>' +
     '      </table>' +
     '    </section>' +
     '</layout-default>';
@@ -423,6 +426,7 @@ export const InsightsComponent = {
                 insights.reportData = response.data.reportData;
                 insights.drawChart();
             }).catch(function (error) {
+                console.log(error);
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
                     router.push('/');
@@ -447,6 +451,7 @@ export const InsightsComponent = {
         drawChart: function () {
             let insights = this,
                 chartCanvas = insights.$refs.insightsGraph.getContext('2d'),
+                parent = insights.$refs.insightsGraph.parent,
                 data = insights.chartData;
             if (insights.chart) {
                 insights.chart.destroy();
@@ -480,6 +485,7 @@ export const InsightsComponent = {
                     labels: data.labels
                 },
                 options: {
+                    animation: false,
                     responsive: true,
                     scales: {
                         yAxis: {
