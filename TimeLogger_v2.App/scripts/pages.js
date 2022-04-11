@@ -36,9 +36,9 @@ let templateHome =
     '                    <td class="table__col">{{timeEntry.end}}</td>' +
     '                    <td class="table__col">{{timeEntry.description}}</td>' +
     '                    <td class="table__col table__col--actions">' +
-    '                        <a href="#" class="btn btn--sm" title="Copy" v-if="!timeEntry.isUpdating" v-on:click.prevent="makeCopyForEntry(timeEntry.id)"><i class="icon action__copy"></i></a>' +
-    '                        <a href="#" class="btn btn--sm btn--secondary" title="Cancel" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()"><i class="icon action__cancel"></i></a>' +
-    '                        <a href="#" class="btn btn--sm" title="Edit" v-if="selectedEntryId !== timeEntry.id && !timeEntry.isUpdating" v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
+    '                        <a href="#" class="btn btn--sm btn--stack" title="Copy" v-if="!timeEntry.isUpdating" v-on:click.prevent="makeCopyForEntry(timeEntry.id)"><i class="icon action__copy"></i></a>' +
+    '                        <a href="#" class="btn btn--sm btn--secondary btn--stack" title="Cancel" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()"><i class="icon action__cancel"></i></a>' +
+    '                        <a href="#" class="btn btn--sm btn--stack" title="Edit" v-if="selectedEntryId !== timeEntry.id && !timeEntry.isUpdating" v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
     '                    </td>' +
     '                </tr>' +
     '            </tbody>' +

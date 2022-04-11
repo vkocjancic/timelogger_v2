@@ -402,6 +402,10 @@ main {
     width: 100%;
 }
 
+.btn--stack {
+    margin-block: calc(var(--pt-sm) * 0.25);
+}
+
 .btn--primary {
     background-color: var(--clr-accent);
     border-color: var(--clr-accent);
