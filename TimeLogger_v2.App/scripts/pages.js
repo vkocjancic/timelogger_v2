@@ -1,6 +1,6 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
 import { sessionStore } from './clientstore.js';
-import { DateNavigatorComponent, DropDownSelectorComponent, RangeNavigatorComponent } from './shared.js';
+import { AlertComponent, DateNavigatorComponent, DropDownSelectorComponent, RangeNavigatorComponent } from './shared.js';
 import { dailyLogsSummary, dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
 const ViewMode = {
@@ -20,7 +20,7 @@ let templateHome =
     '    <drop-down label="View as" :options="[{text:\'Input\', value:\'I\'}, {text:\'Summary\', value:\'S\'}]" v-on:change="handleViewChange"></drop-down>' +
     '    <date-navigator v-on:date-change="handleDateChange"></date-navigator>' +
     '    <section class="main__content">' +
-    '        <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '        <alert :message="alertMessage" />' +
     '        <table class="table" v-if="viewMode == 0">' +
     '            <thead>' +
     '                <tr>' +
@@ -100,7 +100,6 @@ export const HomeComponent = {
             },
             selectedDate: dateFormatter.toIsoDate(new Date()),
             selectedEntryId: null,
-            showAlert: false,
             timeEntries: [],
             summaryEntries: [],
             totalDuration: '0m',
@@ -116,7 +115,7 @@ export const HomeComponent = {
             let dailyLogs = this;
             dailyLogs.selectedEntryId = null;
             dailyLogs.clearTimeEntry(event);
-            dailyLogs.setAlert();
+            dailyLogs.alertMessage = null;
         },
 
         clearTimeEntry: function (event) {
@@ -133,29 +132,19 @@ export const HomeComponent = {
             dailyLogs.timeEntries.splice(ixEntry, 1);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
-            dailyLogs.setAlert();
+            dailyLogs.alertMessage = null;
             // submit entry to server
             axios.post('api/timeentry/delete', { Id: ix }).then(function (response) {
                 // we don't need to do anything
-            }).catch(function (error) {
-                if (error.response.status === 401 || error.response.status === 403) {
-                    sessionStore.setter.isLoggedIn(false);
-                    router.push('/');
-                }
-                else {
-                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
-                }
-            });
+            }).catch(dailyLogs.handleError);
         },
 
         fetchData: function () {
-            let dailyLogs = this,
-                router = this.$router;
+            let dailyLogs = this;
             dailyLogs.timeEntries = [];
-            dailyLogs.setAlert();
+            dailyLogs.alertMessage = null;
             axios.get('/api/timeentry/list', { params: { 'selectedDate': dailyLogs.selectedDate } }).then(function (response) {
                 var entries = response.data;
-                var totalDuration = 0;
                 entries.forEach((entry) => {
                     var newEntry = dailyLogs.newEntryFromApiEntry(entry);
                     dailyLogs.timeEntries.push(newEntry);
@@ -164,15 +153,7 @@ export const HomeComponent = {
                 if (dailyLogs.viewMode === ViewMode.SUMMARY) {
                     dailyLogs.prepareSummaryView();
                 }
-            }).catch(function (error) {
-                if (error.response.status === 401 || error.response.status === 403) {
-                    sessionStore.setter.isLoggedIn(false);
-                    router.push('/');
-                }
-                else {
-                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
-                }
-            });
+            }).catch(dailyLogs.handleError);
         },
 
         focusTimeLogInput: function () {
@@ -192,6 +173,18 @@ export const HomeComponent = {
             let dailyLogs = this;
             dailyLogs.selectedDate = newDate;
             dailyLogs.fetchData();
+        },
+
+        handleError: function (error) {
+            let dailyLogs = this,
+                router = this.$router;
+            if (error.response.status === 401 || error.response.status === 403) {
+                sessionStore.setter.isLoggedIn(false);
+                router.push('/');
+            }
+            else {
+                dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
+            }
         },
 
         handleViewChange: function (obj) {
@@ -218,7 +211,7 @@ export const HomeComponent = {
             dailyLogs.timeEntries.push(entryTemporary);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearTimeEntry();
-            dailyLogs.setAlert();
+            dailyLogs.alertMessage = null;
             // submit entry to server
             axios.post('api/timeentry/create', entryFromString).then(function (response) {
                 var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
@@ -235,13 +228,13 @@ export const HomeComponent = {
                     dailyLogs.timeEntries[ixEntry].isUpdating = false;
                     if (error.response.data
                         && error.response.data === "ERR_TIME_ENTRY_END_BEFORE_BEGIN") {
-                        dailyLogs.setAlert('Entry cannot end before it begins. Please, check your time format');
+                        dailyLogs.alertMessage = 'Entry cannot end before it begins. Please, check your time format';
                         dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(dailyLogs.timeEntries[ixEntry]);
                         dailyLogs.timeEntries.splice(ixEntry, 1);
                         dailyLogs.focusTimeLogInput();
                     }
                     else {
-                        dailyLogs.setAlert('Oops. Something went wrong. Please, try again later.');
+                        dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later.';
                     }
                 }
             });
@@ -251,7 +244,7 @@ export const HomeComponent = {
             let dailyLogs = this,
                 ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === entryId)),
                 entry;
-            dailyLogs.setAlert();
+            dailyLogs.alertMessage = null;
             if (ixEntry == -1) {
                 return;
             }
@@ -297,12 +290,6 @@ export const HomeComponent = {
             dailyLogs.totalDuration = durationFormatter.fromDuration(totalDuration);
         },
 
-        setAlert: function (message) {
-            let dailyLogs = this;
-            dailyLogs.showAlert = (message) ? true : false;
-            dailyLogs.alertMessage = message;
-        },
-
         setEntryToEdit: function (entryId) {
             let dailyLogs = this,
                 entry = dailyLogs.makeCopyForEntry(entryId);
@@ -330,10 +317,10 @@ export const HomeComponent = {
             dailyLogs.timeEntries[ixEntry].isUpdating = true;
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
-            dailyLogs.setAlert();
+            dailyLogs.alertMessage = null;
             // submit entry to server
             axios.post('api/timeentry/update', entryFromString).then(function (response) {
-                var ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
+                ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
                 dailyLogs.timeEntries[ixEntry].isUpdating = false;
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
@@ -341,9 +328,9 @@ export const HomeComponent = {
                     router.push('/');
                 }
                 else {
-                    var ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
+                    ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
                     dailyLogs.timeEntries[ixEntry].isUpdating = false;
-                    dailyLogs.setAlert('Oops. Something went wrong. Please, try again later');
+                    dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
                 }
             });
         }
@@ -351,6 +338,7 @@ export const HomeComponent = {
     },
     components: {
         'layout-default': LayoutDefaultComponent,
+        'alert': AlertComponent,
         'date-navigator': DateNavigatorComponent,
         'drop-down': DropDownSelectorComponent
     },
@@ -368,7 +356,7 @@ let templateInsights =
     '    </header>' +
     '    <range-navigator v-on:range-change="handleRangeChange"></range-navigator>' +
     '    <section class="main__content">' +
-    '      <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '      <alert :message="alertMessage" />' +
     '      <div class="insights__graph">' +
     '    	 <canvas id="insightsGraph" ref="insightsGraph" class="insights__graph--canvas"></canvas>' +
     '      </div>' +
@@ -405,7 +393,6 @@ export const InsightsComponent = {
             },
             selectedStartDate: dateFormatter.toIsoDate(new Date().addDays(-7)),
             selectedEndDate: dateFormatter.toIsoDate(new Date()),
-            showAlert: false,
             reportData: []
         }
     },
@@ -432,7 +419,7 @@ export const InsightsComponent = {
                     router.push('/');
                 }
                 else {
-                    insights.setAlert('Oops. Something went wrong. Please, try again later');
+                    insights.alertMessage = 'Oops. Something went wrong. Please, try again later';
                 }
             });
         },
@@ -451,7 +438,6 @@ export const InsightsComponent = {
         drawChart: function () {
             let insights = this,
                 chartCanvas = insights.$refs.insightsGraph.getContext('2d'),
-                parent = insights.$refs.insightsGraph.parent,
                 data = insights.chartData;
             if (insights.chart) {
                 insights.chart.destroy();
@@ -496,16 +482,11 @@ export const InsightsComponent = {
                     }
                 }
             });
-        },
-
-        setAlert: function (message) {
-            let dailyLogs = this;
-            dailyLogs.showAlert = (message) ? true : false;
-            dailyLogs.alertMessage = message;
-        },
+        }
     },
     components: {
         'layout-default': LayoutDefaultComponent,
+        'alert': AlertComponent,
         'range-navigator': RangeNavigatorComponent,
     },
     template: templateInsights
@@ -522,7 +503,7 @@ let templateUpgradeAccount =
     '        <p class="main__title--sub">Current plan: <em class="main__title--info">{{account.type}} (expires {{getExpiresMessage}})</em></p>' +
     '    </header>' +
     '    <section class="main__content">' +
-    '        <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '        <alert :message="alertMessage" />' +
     '        <div class="plan--container">' +
     '             <div v-for="package in packages" v-bind:class="[\'plan\', \'plan--\' + package.code ]">' +
     '    	          <h2 class="plan--title">{{ package.title }}</h2>' +
@@ -572,24 +553,19 @@ export const UpgradeAccountComponent = {
                     router.push('/');
                 }
                 else {
-                    upgrade.setAlert('Oops. Something went wrong. Please, try again later');
+                    upgrade.alertMessage = 'Oops. Something went wrong. Please, try again later';
                 }
             });
         },
 
         getPlanExpires: function (expires) {
             return (expires == 0) ? 'Perpetual' : 'Expires in ' + expires + ' year';
-        },
-
-        setAlert: function (message) {
-            let dailyLogs = this;
-            dailyLogs.showAlert = (message) ? true : false;
-            dailyLogs.alertMessage = message;
-        },
+        }
 
     },
     components: {
-        'layout-default': LayoutDefaultComponent
+        'layout-default': LayoutDefaultComponent,
+        'alert': AlertComponent
     },
     template: templateUpgradeAccount
 };

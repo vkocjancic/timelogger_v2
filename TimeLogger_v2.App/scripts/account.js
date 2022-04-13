@@ -1,5 +1,6 @@
 ﻿import { sessionStore } from './clientstore.js';
 import { dateFormatter } from './common.js';
+import { AlertComponent } from './shared.js';
 
 /* * * * * * * * * * * * * * * * * * * 
  *   LoginComponent                  *
@@ -10,7 +11,7 @@ let templateLogin =
     '       <form name="login" class="account__form" novalidate="novalidate" v-on:submit.prevent="signIn">' +
     '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <alert :message="alertMessage" />' +
     '               <p>Enter your <strong>email address</strong> and <strong>password</strong></p>' +
     '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div><input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" /></div>' +
@@ -34,8 +35,7 @@ export const LoginComponent = {
                 buttonSignIn: 'Sign in',
                 username: '',
                 password: ''
-            },
-            showAlert: false
+            }
         }
     },
     methods: {
@@ -55,11 +55,10 @@ export const LoginComponent = {
                         type: details.accountType,
                         expires: (details.expiresIsoDate) ? dateFormatter.fromIsoDate(details.expiresIsoDate) : null
                     });
-                    login.showAlert = false;
+                    login.alertMessage = null;
                     router.push(route.query.redirect || '/');
                 }
             }).catch(function (error) {
-                login.showAlert = true;
                 if (error.response.status === 401) {
                     login.alertMessage = 'Sorry, you have entered invalid e-mail or password';
                     login.disableLogin = true;
@@ -81,6 +80,9 @@ export const LoginComponent = {
                 }
             });
         }
+    },
+    components: {
+        'alert': AlertComponent
     },
     template: templateLogin
 };
@@ -118,7 +120,7 @@ let templateCreateAccount =
     '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="signUp">' +
     '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <alert :message="alertMessage" />' +
     '               <p>Enter your <strong>email address</strong> and <strong>password</strong></p>' +
     '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div>' +
@@ -159,12 +161,10 @@ function doValidation(signup) {
         message = 'Passwords do not match';
     }
     if (isValid) {
-        signup.alertMessage = '';
-        signup.showAlert = false;
+        signup.alertMessage = null;
     }
     else {
         signup.alertMessage = message;
-        signup.showAlert = true;
     }
     return isValid;
 }
@@ -179,8 +179,7 @@ export const CreateAccountComponent = {
                 username: '',
                 password: '',
                 passwordCheck: ''
-            },
-            showAlert: false
+            }
         }
     },
     methods: {
@@ -196,10 +195,9 @@ export const CreateAccountComponent = {
                 password: signup.input.password,
                 passwordCheck: signup.input.passwordCheck
             }).then(function (response) {
-                signup.showAlert = false;
+                signup.alertMessage = null;
                 router.push(route.query.redirect || '/');
             }).catch(function (error) {
-                signup.showAlert = true;
                 if (error.response.status === 400) {
                     signup.alertMessage = (error.response.data.errorMessage) ? error.response.data.errorMessage : error.response.data;
                 }
@@ -208,6 +206,9 @@ export const CreateAccountComponent = {
                 }
             });
         }
+    },
+    components: {
+        'alert': AlertComponent
     },
     template: templateCreateAccount
 };
@@ -222,7 +223,7 @@ let templateForgotPassword =
     '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="sendPasswordRecoveryEmail">' +
     '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert" v-bind:class="getAlertMessageClass" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <alert :message="alertMessage" :type="getAlertType" />' +
     '               <p>Enter your <strong>email address</strong></p>' +
     '               <div><input id="inUsername" name="inUsername" type="email" class="ctrl" placeholder="you@example.com" autofocus="autofocus" v-model="input.username" /></div>' +
     '               <div>' +
@@ -249,9 +250,9 @@ export const ForgotPasswordComponent = {
         }
     },
     computed: {
-        getAlertMessageClass: function () {
+        getAlertType: function () {
             var forgotPassword = this;
-            return forgotPassword.hasError ? 'alert--danger' : 'alert--success';
+            return forgotPassword.hasError ? 'danger' : 'success';
         }
     },
     methods: {
@@ -287,7 +288,7 @@ let templatePasswordReset =
     '       <form name="create" class="account__form" novalidate="novalidate" v-on:submit.prevent="resetPassword">' +
     '           <img src="../images/login_logo.png" alt="TimeLogger logo" class="account__form__logo" />' +
     '           <fieldset>' +
-    '               <div class="alert alert--danger" v-if="showAlert">{{ alertMessage }}</div>' +
+    '               <alert :message="alertMessage" />' +
     '               <p>Enter your new <strong>password</strong> twice</p>' +
     '               <div>' +
     '                   <input id="inPassword" name="inPassword" type="password" class="ctrl" placeholder="password" v-model="input.password" />' +
@@ -311,8 +312,7 @@ export const PasswordResetComponent = {
                 buttonReset: 'Reset password',
                 password: '',
                 passwordCheck: ''
-            },
-            showAlert: false
+            }
         }
     },
     methods: {
@@ -331,10 +331,9 @@ export const PasswordResetComponent = {
                 passwordCheck: pwdreset.input.passwordCheck,
                 passwordResetId: route.params.id
             }).then(function (response) {
-                pwdreset.showAlert = false;
+                pwdreset.alertMessage = '';
                 router.push('/');
             }).catch(function (error) {
-                pwdreset.showAlert = true;
                 if (error.response.status === 400) {
                     pwdreset.alertMessage = (error.response.data.errorMessage) ? error.response.data.errorMessage : error.response.data;
                 }
@@ -343,6 +342,9 @@ export const PasswordResetComponent = {
                 }
             });
         }
+    },
+    components: {
+        'alert': AlertComponent
     },
     template: templatePasswordReset
 };

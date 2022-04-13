@@ -2,6 +2,26 @@
 
 
 /* * * * * * * * * * * * * * * * * * *
+ *   AlertComponent                  *
+ * * * * * * * * * * * * * * * * * * */
+let templateAlert =
+    '<div class="alert" v-bind:class="getAlertClass" v-if="message">{{ message }}</div>';
+
+export const AlertComponent = {
+    props: ['message', 'type'],
+    computed: {
+        getAlertClass: function () {
+            let alert = this,
+                className = alert.type || 'danger';
+            return 'alert--' + className;
+        }
+    },
+    template: templateAlert
+};
+/* END DateNavigatorComponent        */
+
+
+/* * * * * * * * * * * * * * * * * * *
  *   DateNavigatorComponent          *
  * * * * * * * * * * * * * * * * * * */
 let templateDateNavigator =
