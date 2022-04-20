@@ -1,6 +1,6 @@
 ﻿import { LayoutDefaultComponent } from './layout.js';
 import { sessionStore } from './clientstore.js';
-import { AlertComponent, DateNavigatorComponent, DropDownSelectorComponent, RangeNavigatorComponent } from './shared.js';
+import { AlertComponent, DateNavigatorComponent, DropDownSelectorComponent, RangeNavigatorComponent, TableComponent } from './shared.js';
 import { dailyLogsSummary, dateFormatter, durationCalculator, durationFormatter, timeEntryFormatter } from './common.js';
 
 const ViewMode = {
@@ -21,79 +21,26 @@ let templateHome =
     '    <date-navigator v-on:date-change="handleDateChange"></date-navigator>' +
     '    <section class="main__content">' +
     '        <alert :message="alertMessage" />' +
-    '        <table class="table" v-if="viewMode == 0">' +
-    '            <thead>' +
-    '                <tr>' +
-    '                    <th class="table__col table__col--time">Begin</th>' +
-    '                    <th class="table__col table__col--time">End</th>' +
-    '                    <th class="table__col">Description</th>' +
-    '                    <th class="table__col table__col--actions">Actions</th>' +
-    '                </tr>' +
-    '            </thead>' +
-    '            <tbody v-if="timeEntries.length > 0">' +
-    '                <tr v-for="timeEntry in timeEntries" v-bind:class="{ \'table__row--edit\': selectedEntryId === timeEntry.id }" >' +
-    '                    <td class="table__col">{{timeEntry.begin}}</td>' +
-    '                    <td class="table__col">{{timeEntry.end}}</td>' +
-    '                    <td class="table__col">{{timeEntry.description}}</td>' +
-    '                    <td class="table__col table__col--actions">' +
-    '                        <a href="#" class="btn btn--sm btn--stack" title="Copy" v-if="!timeEntry.isUpdating" v-on:click.prevent="makeCopyForEntry(timeEntry.id)"><i class="icon action__copy"></i></a>' +
-    '                        <a href="#" class="btn btn--sm btn--secondary btn--stack" title="Cancel" v-if="selectedEntryId === timeEntry.id" v-on:click.prevent="clearEntryFromEdit()"><i class="icon action__cancel"></i></a>' +
-    '                        <a href="#" class="btn btn--sm btn--stack" title="Edit" v-if="selectedEntryId !== timeEntry.id && !timeEntry.isUpdating" v-on:click.prevent="setEntryToEdit(timeEntry.id)"><i class="icon action__edit"></i></a>' +
-    '                    </td>' +
-    '                </tr>' +
-    '            </tbody>' +
-    '            <tbody v-else>' +
-    '                <tr class="table__row--empty"><td colspan="4" class="table__col">It is rather lonely in here :( ...</td></tr>' +
-    '            </tbody>' +
-    '            <tfoot>' +
-    '                <tr>' +
-    '                    <td colspan="4">' +
-    '                        <form class="timelog__form" name="edit" novalidate="novalidate" v-on:submit.prevent="submitTimeEntry">' +
-    '                            <fieldset>' +
-    '                                <input id="inTimeLog" ref="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for #Task #Project" autocomplete="off"' +
-    '                                   v-model="input.entryText" /> ' +
-    '                            </fieldset>' +
-    '                            <div class="timelog__form--actions">' +
-    '                                <button class="btn btn--sm btn--primary" type="submit">Save</button>' +
-    '                                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>' +
-    '                                <button class="btn btn--sm btn--alert" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>' +
-    '                            </div>' +
-    '                        </form>' +
-    '                    </td>' +
-    '                </tr>' +
-    '            </tfoot>' +
-    '        </table>' +
-    '        <table class="table" v-else>' +
-    '            <thead>' +
-    '                <tr>' +
-    '                    <th class="table__col">Description</th>' +
-    '                    <th class="table__col table__col--duration">Duration</th>' +
-    '                </tr>' +
-    '            </thead>' +
-    '            <tbody v-if="summaryEntries.length > 0">' +
-    '                <tr v-for="summaryEntry in summaryEntries">' +
-    '                    <td class="table__col">#{{summaryEntry.tag}}' +
-    '                        <ul class="summary__details">' +
-    '                            <li v-for="entry in summaryEntry.entries" class="summary__details--item">{{entry.description}}</li>' +
-    '                        </ul>' +
-    '                    </td> ' +
-    '                    <td class="table__col table__col--duration">{{this.formatDuration(summaryEntry.duration)}}' +
-    '                        <ul class="summary__details">' +
-    '                            <li v-for="entry in summaryEntry.entries" class="summary__details--item">{{this.formatDuration(entry.duration)}}</li>' +
-    '                        </ul>' +
-    '                    </td>' +
-    '                </tr>' +
-    '            </tbody>' +
-    '            <tbody v-else>' +
-    '                <tr class="table__row--empty"><td colspan="2" class="table__col">It is rather lonely in here :( ...</td></tr>' +
-    '            </tbody>' +
-    '        </table>' +
+    '        <table-dynamic v-bind="tableDataInput" v-if="viewMode == 0" v-on:action-clicked="tableInputActionClicked" />' +
+    '        <form class="timelog__form" name="edit" novalidate="novalidate" v-if="viewMode == 0" v-on:submit.prevent="submitTimeEntry">' +
+    '            <fieldset>' +
+    '                <input id="inTimeLog" ref="inTimeLog" class="ctrl" type="text" name="tbEntry" placeholder="@08:00-12:00 Worked on non important stuff for #Task #Project" autocomplete="off"' +
+    '                   v-model="input.entryText" /> ' +
+    '            </fieldset>' +
+    '            <div class="timelog__form--actions">' +
+    '                <button class="btn btn--sm btn--primary" type="submit">Save</button>' +
+    '                <button class="btn btn--sm btn--secondary" v-if="!selectedEntryId" v-on:click.prevent="clearTimeEntry">Clear</button>' +
+    '                <button class="btn btn--sm btn--alert" v-if="selectedEntryId" v-on:click.prevent="deleteTimeEntry">Delete</button>' +
+    '            </div>' +
+    '        </form>' +
+    '        <table-dynamic v-bind="tableDataSummary" v-else />' +
     '    </section>' +
     '</layout-default>';
 
 export const HomeComponent = {
     data() {
         return {
+            actionsAll: ['Copy', 'Edit', 'Cancel'],
             alertMessage: '',
             input: {
                 entryText: ''
@@ -101,7 +48,28 @@ export const HomeComponent = {
             selectedDate: dateFormatter.toIsoDate(new Date()),
             selectedEntryId: null,
             timeEntries: [],
-            summaryEntries: [],
+            tableDataInput: {
+                idCol: 'id',
+                rowActions: [
+                    { name: 'Copy', visible: true },
+                    { name: 'Edit', visible: true },
+                    { name: 'Cancel', visible: false, style: 'secondary' },
+                ],
+                columns: [
+                    { name: 'Begin', bindTo: 'begin', type: 'TIME' },
+                    { name: 'End', bindTo: 'end', type: 'TIME' },
+                    { name: 'Description', bindTo: 'description', type: 'NORMAL' },
+                ],
+                values: []
+            },
+            tableDataSummary: {
+                displayDetails: true,
+                columns: [
+                    { name: 'Description', bindTo: 'tag', type: 'NORMAL', detailsBindTo: 'description' },
+                    { name: 'Duration', bindTo: 'duration', type: 'DURATION', transform: durationFormatter.fromDuration }
+                ],
+                values: []
+            },
             totalDuration: '0m',
             viewMode: ViewMode.INPUT
         }
@@ -113,7 +81,7 @@ export const HomeComponent = {
 
         clearEntryFromEdit: function (event) {
             let dailyLogs = this;
-            dailyLogs.selectedEntryId = null;
+            dailyLogs.setSelectedEntry(null, false);
             dailyLogs.clearTimeEntry(event);
             dailyLogs.alertMessage = null;
         },
@@ -128,10 +96,11 @@ export const HomeComponent = {
             let dailyLogs = this,
                 ixEntry = dailyLogs.timeEntries.findIndex(o => o.id === dailyLogs.selectedEntryId),
                 ix = dailyLogs.selectedEntryId;
-            // copy new object back into the stack
-            dailyLogs.timeEntries.splice(ixEntry, 1);
-            dailyLogs.recalculateTotalDuration();
+            // remove object from stack
             dailyLogs.clearEntryFromEdit();
+            dailyLogs.timeEntries.splice(ixEntry, 1);
+            dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
+            dailyLogs.recalculateTotalDuration();
             dailyLogs.alertMessage = null;
             // submit entry to server
             axios.post('api/timeentry/delete', { Id: ix }).then(function (response) {
@@ -152,6 +121,9 @@ export const HomeComponent = {
                 dailyLogs.recalculateTotalDuration();
                 if (dailyLogs.viewMode === ViewMode.SUMMARY) {
                     dailyLogs.prepareSummaryView();
+                }
+                else {
+                    dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
                 }
             }).catch(dailyLogs.handleError);
         },
@@ -207,8 +179,9 @@ export const HomeComponent = {
                 extid = Date.now();
             // set external id, add entry directly to timeEntriesArray and recalculate duration
             entryTemporary.extId = extid;
-            entryTemporary.isUpdating = true;
             dailyLogs.timeEntries.push(entryTemporary);
+            dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
+            dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[dailyLogs.timeEntries.length - 1], true);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearTimeEntry();
             dailyLogs.alertMessage = null;
@@ -217,7 +190,7 @@ export const HomeComponent = {
                 var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
                     newEntry = dailyLogs.newEntryFromApiEntry(response.data);
                 dailyLogs.timeEntries[ixEntry].id = newEntry.id;
-                dailyLogs.timeEntries[ixEntry].isUpdating = false;
+                dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
@@ -225,12 +198,13 @@ export const HomeComponent = {
                 }
                 else {
                     var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid));
-                    dailyLogs.timeEntries[ixEntry].isUpdating = false;
+                    dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
                     if (error.response.data
                         && error.response.data === "ERR_TIME_ENTRY_END_BEFORE_BEGIN") {
                         dailyLogs.alertMessage = 'Entry cannot end before it begins. Please, check your time format';
                         dailyLogs.input.entryText = timeEntryFormatter.fromObjectToInputField(dailyLogs.timeEntries[ixEntry]);
                         dailyLogs.timeEntries.splice(ixEntry, 1);
+                        dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
                         dailyLogs.focusTimeLogInput();
                     }
                     else {
@@ -255,7 +229,8 @@ export const HomeComponent = {
         },
 
         newEntryFromApiEntry: function (entry) {
-            let newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isUpdating: false };
+            let dailyLogs = this,
+                newEntry = { id: entry.id, begin: '', end: '', description: entry.description, duration: 0, durationStr: '', isUpdating: false, actions: dailyLogs.actionsAll };
             if (entry.begin) {
                 newEntry.begin = dateFormatter.fromApiDateTime(entry.begin);
             }
@@ -269,8 +244,8 @@ export const HomeComponent = {
 
         prepareSummaryView: function () {
             let dailyLogs = this;
-            dailyLogs.summaryEntries = dailyLogsSummary.create(dailyLogs.timeEntries);
-            dailyLogs.summaryEntries.sort(function (a, b) {
+            dailyLogs.tableDataSummary.values = dailyLogsSummary.create(dailyLogs.timeEntries);
+            dailyLogs.tableDataSummary.values.sort(function (a, b) {
                 let valueA = a.duration,
                     valueB = b.duration;
                 if (valueA < valueB)
@@ -293,7 +268,37 @@ export const HomeComponent = {
         setEntryToEdit: function (entryId) {
             let dailyLogs = this,
                 entry = dailyLogs.makeCopyForEntry(entryId);
-            dailyLogs.selectedEntryId = entry.id;
+            dailyLogs.setSelectedEntry(entry.id, true);
+        },
+
+        setSelectedEntry: function (entryId, value) {
+            let dailyLogs = this,
+                ixEntry = dailyLogs.tableDataInput.values.findIndex((v => v.id == (entryId || dailyLogs.selectedEntryId)));
+            dailyLogs.selectedEntryId = entryId;
+            if (value) {
+                dailyLogs.tableDataInput.values[ixEntry].actions = dailyLogs.actionsAll.filter(function (name) {
+                    return name !== 'Edit';
+                });
+            }
+            else {
+                dailyLogs.tableDataInput.values[ixEntry].actions = dailyLogs.actionsAll.filter(function (name) {
+                    return name !== 'Cancel';
+                });
+            }
+        },
+
+        setUpdatingEntry: function (entry, value) {
+            let dailyLogs = this,
+                ixEntry = dailyLogs.tableDataInput.values.findIndex((v => v.id === entry.id || v.extId === entry.extId));
+            entry.isUpdating = value;
+            if (value) {
+                dailyLogs.tableDataInput.values[ixEntry].actions = [];
+            }
+            else {
+                dailyLogs.tableDataInput.values[ixEntry].actions = dailyLogs.actionsAll.filter(function (name) {
+                    return name !== 'Cancel';
+                });
+            }
         },
 
         submitTimeEntry: function (event) {
@@ -306,6 +311,19 @@ export const HomeComponent = {
             }
         },
 
+        tableInputActionClicked: function (action, id) {
+            let dailyLogs = this;
+            if (action === 'Cancel') {
+                dailyLogs.clearEntryFromEdit();
+            }
+            else if (action === 'Copy') {
+                dailyLogs.makeCopyForEntry(id);
+            }
+            else if (action === 'Edit') {
+                dailyLogs.setEntryToEdit(id);
+            }
+        },
+
         updateTimeEntry: function () {
             let dailyLogs = this,
                 selectedId = dailyLogs.selectedEntryId,
@@ -314,14 +332,15 @@ export const HomeComponent = {
             entryFromString.id = dailyLogs.selectedEntryId;
             // copy new object back into the stack
             dailyLogs.timeEntries[ixEntry] = dailyLogs.newEntryFromApiEntry(entryFromString);
-            dailyLogs.timeEntries[ixEntry].isUpdating = true;
+            dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
+            dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], true);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
             dailyLogs.alertMessage = null;
             // submit entry to server
             axios.post('api/timeentry/update', entryFromString).then(function (response) {
                 ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
-                dailyLogs.timeEntries[ixEntry].isUpdating = false;
+                dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
@@ -329,7 +348,7 @@ export const HomeComponent = {
                 }
                 else {
                     ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
-                    dailyLogs.timeEntries[ixEntry].isUpdating = false;
+                    dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
                     dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
                 }
             });
@@ -340,7 +359,8 @@ export const HomeComponent = {
         'layout-default': LayoutDefaultComponent,
         'alert': AlertComponent,
         'date-navigator': DateNavigatorComponent,
-        'drop-down': DropDownSelectorComponent
+        'drop-down': DropDownSelectorComponent,
+        'table-dynamic': TableComponent
     },
     template: templateHome
 };
@@ -360,21 +380,7 @@ let templateInsights =
     '      <div class="insights__graph">' +
     '    	 <canvas id="insightsGraph" ref="insightsGraph" class="insights__graph--canvas"></canvas>' +
     '      </div>' +
-    '      <table class="table">' +
-    '    	 <thead>' +
-    '    	   <th class="table__col">Tag</th>' +
-    '    	   <th class="table__col table__col--duration">Duration</th>' +
-    '    	 </thead>' +
-    '    	 <tbody v-if="reportData.length > 0">' +
-    '    	   <tr v-for="item in reportData">' +
-    '    	 	<td class="table__col">#{{item.tag}}</td>' +
-    '    	 	<td class="table__col table__col--duration">{{this.formatDuration(item.duration)}}</td>' +
-    '    	   </tr>' +
-    '    	 </tbody>' +
-    '        <tbody v-else>' +
-    '            <tr class="table__row--empty"><td colspan="2" class="table__col">It is rather lonely in here :( ...</td></tr>' +
-    '        </tbody>' +
-    '      </table>' +
+    '      <table-dynamic v-bind="tableData" />' +
     '    </section>' +
     '</layout-default>';
 
@@ -393,7 +399,10 @@ export const InsightsComponent = {
             },
             selectedStartDate: dateFormatter.toIsoDate(new Date().addDays(-7)),
             selectedEndDate: dateFormatter.toIsoDate(new Date()),
-            reportData: []
+            tableData: {
+                columns: [{ name: 'Tag', bindTo: 'tag', type: 'NORMAL' }, { name: 'Duration', bindTo: 'duration', type: 'DURATION', transform: durationFormatter.fromDuration }],
+                values: []
+            }
         }
     },
     created() {
@@ -405,12 +414,12 @@ export const InsightsComponent = {
             let insights = this,
                 router = this.$router;
             insights.chartData = null;
-            insights.reportData = [];
+            insights.tableData.values = [];
             axios.get('/api/insights/list', {
                 params: { 'startDate': insights.selectedStartDate, 'endDate': insights.selectedEndDate }
             }).then(function (response) {
                 insights.chartData = response.data.chartData;
-                insights.reportData = response.data.reportData;
+                insights.tableData.values = response.data.reportData;
                 insights.drawChart();
             }).catch(function (error) {
                 console.log(error);
@@ -488,6 +497,7 @@ export const InsightsComponent = {
         'layout-default': LayoutDefaultComponent,
         'alert': AlertComponent,
         'range-navigator': RangeNavigatorComponent,
+        'table-dynamic': TableComponent
     },
     template: templateInsights
 };
