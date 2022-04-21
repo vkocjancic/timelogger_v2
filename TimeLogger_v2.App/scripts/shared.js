@@ -114,7 +114,10 @@ let templateTableComponent =
     '<table class="table">' +
     '  <thead v-if="columns && columns.length > 0">' +
     '    <th class="table__col" :class="{ \'table__col--duration\': column.type == \'DURATION\', \'table__col--time\': column.type == \'TIME\' }" ' +
-    '      v-for="column in columns">{{column.name}}</th>' +
+    '      v-for="column in columns">' +
+    '      <a href="#" class="table__col--sort" :class="{\'table__col--sort-asc\': column.bindTo === columnToSort && directionToSort === \'asc\', \'table__col--sort-desc\': column.bindTo === columnToSort && directionToSort === \'desc\'}" ' +
+    '        v-on:click.prevent="sortByCol(column)">{{column.name}}</a>' +
+    '    </th>' +
     '    <th class="table__col table__col--actions" v-if="rowActions && rowActions.length > 0">Actions</th>' +
     '  </thead>' +
     '  <tbody v-if="values && values.length > 0">' +
@@ -141,10 +144,16 @@ let templateTableComponent =
     '</table>';
 
 export const TableComponent = {
-    props: ['columns', 'displayDetails', 'idCol', 'rowActions', 'values'],
+    props: ['columns', 'displayDetails', 'idCol', 'rowActions', 'sortCol', 'sortDirection', 'values'],
     data() {
         return {
+            columnToSort: '',
+            directionToSort: ''
         }
+    },
+    created() {
+        this.columnToSort = this.sortCol;
+        this.directionToSort = this.sortDirection;
     },
     computed: {
         getColCount: function () {
@@ -168,6 +177,26 @@ export const TableComponent = {
             let control = this,
                 output = value[column.detailsBindTo || column.bindTo || column.name];
             return control.transformColValue(column, output);
+        },
+
+        sortByCol: function (column) {
+            let control = this;
+            if (column.bindTo === control.columnToSort) {
+                control.directionToSort = (control.directionToSort === 'asc') ? 'desc' : 'asc';
+            }
+            else {
+                control.directionToSort = 'desc';
+                control.columnToSort = column.bindTo;
+            }
+            control.values.sort(function (a, b) {
+                let valueA = a[column.bindTo],
+                    valueB = b[column.bindTo];
+                if (valueA < valueB)
+                    return (control.directionToSort === 'asc') ? -1 : 1;
+                if (valueA > valueB)
+                    return (control.directionToSort === 'asc') ? 1 : -1;
+                return 0;
+            });
         },
 
         transformColValue(column, output) {

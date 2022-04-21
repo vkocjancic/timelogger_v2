@@ -60,6 +60,8 @@ export const HomeComponent = {
                     { name: 'End', bindTo: 'end', type: 'TIME' },
                     { name: 'Description', bindTo: 'description', type: 'NORMAL' },
                 ],
+                sortCol: 'begin',
+                sortDirection: 'asc',
                 values: []
             },
             tableDataSummary: {
