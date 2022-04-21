@@ -491,12 +491,17 @@ main {
     padding: var(--pt-sm);
     padding-left: 0;
     text-align: left;
+    text-transform: uppercase;
 }
 
 .table__col--actions,
 .table__col--duration{
     padding-right: 0;
     text-align: right;
+}
+
+.table__col--sort {
+    text-decoration: none;
 }
 
 .table__row--edit .table__col, .table__row--empty .table__col {
