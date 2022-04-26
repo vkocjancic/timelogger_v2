@@ -113,12 +113,12 @@ export const RangeNavigatorComponent = {
 let templateTableComponent =
     '<table class="table">' +
     '  <thead v-if="columns && columns.length > 0">' +
-    '    <th class="table__col" :class="{ \'table__col--duration\': column.type == \'DURATION\', \'table__col--time\': column.type == \'TIME\' }" ' +
+    '    <th class="table__col table__col--head" :class="{ \'table__col--duration\': column.type == \'DURATION\', \'table__col--time\': column.type == \'TIME\' }" ' +
     '      v-for="column in columns">' +
     '      <a href="#" class="table__col--sort" :class="{\'table__col--sort-asc\': column.bindTo === columnToSort && directionToSort === \'asc\', \'table__col--sort-desc\': column.bindTo === columnToSort && directionToSort === \'desc\'}" ' +
     '        v-on:click.prevent="sortByCol(column)">{{column.name}}</a>' +
     '    </th>' +
-    '    <th class="table__col table__col--actions" v-if="rowActions && rowActions.length > 0">Actions</th>' +
+    '    <th class="table__col table__col--head table__col--actions" v-if="rowActions && rowActions.length > 0">Actions</th>' +
     '  </thead>' +
     '  <tbody v-if="values && values.length > 0">' +
     '    <tr v-for="value in values">' +
