@@ -403,7 +403,7 @@ main {
 }
 
 .btn--stack {
-    margin-block: calc(var(--pt-sm) * 0.25);
+    margin-left: calc(var(--pt-sm) * 0.25);
 }
 
 .btn--primary {

@@ -131,7 +131,7 @@ let templateTableComponent =
     '      <td class="table__col table__col--actions" v-if="rowActions && rowActions.length > 0" >' +
     '        <template v-for="action in rowActions">' +
     '          <a href="#" class="btn btn--sm btn--stack" :class="{\'btn--secondary\': action.style == \'secondary\'}" :title="action.name" ' +
-    '            v-if="action.visible && value.actions.indexOf(action.name) != -1" v-on:click.prevent="$emit(\'action-clicked\', action.name, value.id)">' +
+    '            v-if="value.actions.indexOf(action.name) != -1" v-on:click.prevent="$emit(\'action-clicked\', action.name, value.id)">' +
     '            <i class="icon" :class="\'action__\' + action.name.toLowerCase()"></i>' +
     '          </a>' +
     '        </template>' +

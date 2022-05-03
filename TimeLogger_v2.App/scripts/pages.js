@@ -51,9 +51,9 @@ export const HomeComponent = {
             tableDataInput: {
                 idCol: 'id',
                 rowActions: [
-                    { name: 'Copy', visible: true },
-                    { name: 'Edit', visible: true },
-                    { name: 'Cancel', visible: false, style: 'secondary' },
+                    { name: 'Copy' },
+                    { name: 'Edit' },
+                    { name: 'Cancel', style: 'secondary' },
                 ],
                 columns: [
                     { name: 'Begin', bindTo: 'begin', type: 'TIME' },
@@ -126,6 +126,9 @@ export const HomeComponent = {
                 }
                 else {
                     dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
+                    dailyLogs.tableDataInput.values.forEach((value) => {
+                        value.actions = ['Copy', 'Edit'];
+                    });
                 }
             }).catch(dailyLogs.handleError);
         },
@@ -287,6 +290,7 @@ export const HomeComponent = {
                     return name !== 'Cancel';
                 });
             }
+
         },
 
         setUpdatingEntry: function (entry, value) {
