@@ -186,7 +186,7 @@ export const HomeComponent = {
             entryTemporary.extId = extid;
             dailyLogs.timeEntries.push(entryTemporary);
             dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
-            dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[dailyLogs.timeEntries.length - 1], true);
+            dailyLogs.setUpdatingEntry(dailyLogs.timeEntries.length - 1, true);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearTimeEntry();
             dailyLogs.alertMessage = null;
@@ -195,7 +195,7 @@ export const HomeComponent = {
                 var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid)),
                     newEntry = dailyLogs.newEntryFromApiEntry(response.data);
                 dailyLogs.timeEntries[ixEntry].id = newEntry.id;
-                dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
+                dailyLogs.setUpdatingEntry(ixEntry, false);
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
@@ -203,7 +203,7 @@ export const HomeComponent = {
                 }
                 else {
                     var ixEntry = dailyLogs.timeEntries.findIndex((o => o.extId === extid));
-                    dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
+                    dailyLogs.setUpdatingEntry(ixEntry, false);
                     if (error.response.data
                         && error.response.data === "ERR_TIME_ENTRY_END_BEFORE_BEGIN") {
                         dailyLogs.alertMessage = 'Entry cannot end before it begins. Please, check your time format';
@@ -280,6 +280,9 @@ export const HomeComponent = {
             let dailyLogs = this,
                 ixEntry = dailyLogs.tableDataInput.values.findIndex((v => v.id == (entryId || dailyLogs.selectedEntryId)));
             dailyLogs.selectedEntryId = entryId;
+            if (dailyLogs.tableDataInput.values[ixEntry].isUpdating) {
+                return;
+            }
             if (value) {
                 dailyLogs.tableDataInput.values[ixEntry].actions = dailyLogs.actionsAll.filter(function (name) {
                     return name !== 'Edit';
@@ -293,10 +296,9 @@ export const HomeComponent = {
 
         },
 
-        setUpdatingEntry: function (entry, value) {
-            let dailyLogs = this,
-                ixEntry = dailyLogs.tableDataInput.values.findIndex((v => v.id === entry.id || v.extId === entry.extId));
-            entry.isUpdating = value;
+        setUpdatingEntry: function (ixEntry,  value) {
+            let dailyLogs = this;
+            dailyLogs.tableDataInput.values[ixEntry].isUpdating = value;
             if (value) {
                 dailyLogs.tableDataInput.values[ixEntry].actions = [];
             }
@@ -339,14 +341,14 @@ export const HomeComponent = {
             // copy new object back into the stack
             dailyLogs.timeEntries[ixEntry] = dailyLogs.newEntryFromApiEntry(entryFromString);
             dailyLogs.tableDataInput.values = dailyLogs.timeEntries;
-            dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], true);
+            dailyLogs.setUpdatingEntry(ixEntry, true);
             dailyLogs.recalculateTotalDuration();
             dailyLogs.clearEntryFromEdit();
             dailyLogs.alertMessage = null;
             // submit entry to server
             axios.post('api/timeentry/update', entryFromString).then(function (response) {
                 ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
-                dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
+                dailyLogs.setUpdatingEntry(ixEntry, false);
             }).catch(function (error) {
                 if (error.response.status === 401 || error.response.status === 403) {
                     sessionStore.setter.isLoggedIn(false);
@@ -354,7 +356,7 @@ export const HomeComponent = {
                 }
                 else {
                     ixEntry = dailyLogs.timeEntries.findIndex((o => o.id === selectedId));
-                    dailyLogs.setUpdatingEntry(dailyLogs.timeEntries[ixEntry], false);
+                    dailyLogs.setUpdatingEntry(ixEntry, false);
                     dailyLogs.alertMessage = 'Oops. Something went wrong. Please, try again later';
                 }
             });
