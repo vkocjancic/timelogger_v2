@@ -94,7 +94,7 @@ namespace TimeLogger_v2.App.Controllers
             }
             if (!await _accountService.CanResetPassword(remoteIpAddress, model.Username))
             {
-                _logger.LogInformation("{0}\tInvalid password recover request for user '{1}'.");
+                _logger.LogInformation("{0}\tInvalid password recover request for user '{1}'.", remoteIpAddress, model.Username);
                 return Ok();
             }
             var pwdResetEntry = await _accountService.CreatePasswordResetEntry(remoteIpAddress, model.Username);

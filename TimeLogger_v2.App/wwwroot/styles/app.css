@@ -507,6 +507,10 @@ main {
     text-decoration: none;
 }
 
+.table__col--time {
+    width: 7ch;
+}
+
 .table__row--edit .table__col, .table__row--empty .table__col {
     color: var(--clr-grey);
 }
