@@ -508,7 +508,7 @@ main {
 }
 
 .table__col--time {
-    width: 7ch;
+    width: 10ch;
 }
 
 .table__row--edit .table__col, .table__row--empty .table__col {

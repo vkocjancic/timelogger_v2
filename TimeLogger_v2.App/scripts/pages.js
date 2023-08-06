@@ -173,6 +173,7 @@ export const HomeComponent = {
             }
             else {
                 dailyLogs.viewMode = ViewMode.INPUT;
+                dailyLogs.fetchData();
                 dailyLogs.focusTimeLogInput();
             }
         },
