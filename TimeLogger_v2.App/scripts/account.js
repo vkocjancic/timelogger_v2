@@ -52,6 +52,7 @@ export const LoginComponent = {
                     sessionStore.setter.isLoggedIn(true);
                     sessionStore.setter.accountDetails({
                         username: details.username,
+                        initials: details.initials,
                         type: details.accountType,
                         expires: (details.expiresIsoDate) ? dateFormatter.fromIsoDate(details.expiresIsoDate) : null
                     });

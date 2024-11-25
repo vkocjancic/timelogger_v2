@@ -27,9 +27,7 @@ let templateLayoutDefault =
     '            </nav>' +
     '        </div>' +
     '        <input type="checkbox" id="nav__sub--toggle" class="nav__sub--toggle" />' +
-    '        <label for="nav__sub--toggle" class="nav__sub--toggle-label">' +
-    '            <i></i>' +
-    '        </label>' +
+    '        <label for="nav__sub--toggle" class="nav__sub--toggle-label"><span>{{account.initials}}</span></label>' +
     '        <div class="nav__sub">' +
     '            <h3>{{account.username}}</h3>' +
     '            <p class="account__type"><span class="account__type--name">{{account.type}}</span> (expires {{getExpiresMessage}})</p>' +

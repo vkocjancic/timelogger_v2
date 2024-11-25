@@ -206,26 +206,27 @@ h1, h2, h3 {
     margin-right: var(--pt-1);
 }
 
-    .nav__sub--toggle-label i::before {
+    .nav__sub--toggle-label span {
         background-color: var(--clr-ligther-dark);
         border: solid 1px var(--clr-dark-grey-hover);
-        border-radius: 7px;
+        border-radius: 50%;
         color: var(--clr-white);
-        content: "\f118";
         display: inline-block;
-        font-family: var(--ff-fa);
-        font-size: 2em;
-        font-style: normal;
-        font-variant: normal;
-        font-weight: 900;
-        padding: var(--pt-sm) calc(var(--pt-sm) + 0.2rem);
+        font-size: 1.3em;
+        padding: var(--pt-sm) var(--pt-sm);
         text-rendering: auto;
         -webkit-font-smoothing: antialiased;
     }
 
-.nav__sub--toggle:checked ~ .nav__sub {
-    display: block;
-}
+        .nav__sub--toggle-label span:hover,
+        .nav__sub--toggle-label span:focus {
+            background-color: var(--clr-dark-grey-active);
+            border-color: var(--clr-dark-grey-active);
+        }
+
+    .nav__sub--toggle:checked ~ .nav__sub {
+        display: block;
+    }
 
 .nav__sub {
     background-color: var(--clr-dark);

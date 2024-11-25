@@ -40,9 +40,9 @@ namespace TimeLogger_v2.Core.Notifications
         public async Task SendAsync(string recipient)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_options.From));
-            message.To.Add(new MailboxAddress(recipient));
-            message.Bcc.Add(new MailboxAddress("info@timelogger.eu"));
+            message.From.Add(new MailboxAddress(_options.From, _options.From));
+            message.To.Add(new MailboxAddress(recipient, recipient));
+            message.Bcc.Add(new MailboxAddress("Timelogger info", "info@timelogger.eu"));
             message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = await GenerateMessageContent()

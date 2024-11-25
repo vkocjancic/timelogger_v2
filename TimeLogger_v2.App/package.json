@@ -3,8 +3,8 @@
   "name": "TimeLogger",
   "private": true,
   "devDependencies": {
-    "del": "6.0.0",
-    "gulp": "4.0.2",
+    "del": "8.0.0",
+    "gulp": "5.0.0",
     "gulp-uglify": "3.0.2",
     "uglify-es": "3.3.10"
   }

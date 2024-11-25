@@ -11,6 +11,9 @@ namespace TimeLogger_v2.App.Model
 
         #region Properties
 
+        [JsonPropertyName("initials")]
+        public string Initials { get; set; }
+
         [JsonPropertyName("username")]
         public string Username { get; set; }
 
@@ -25,7 +28,11 @@ namespace TimeLogger_v2.App.Model
 
         #region Constructors
 
-        public AccountDetailsModel(string username) => Username = username.ToLower();
+        public AccountDetailsModel(string username)
+        {
+            Initials = username.Substring(0, 2).ToUpper();
+            Username = username.ToLower();
+        }
 
         #endregion
 
